@@ -50,7 +50,7 @@ function usage() {
 function validate_color_encoding_system() {
     [[ -z "$1" ]] && return 0
     
-    if avconv -loglevel quiet -pix_fmts | grep -qw "$1"; then
+    if avconv -loglevel quiet -pix_fmts | grep -q -w "$1"; then
         return 0
     else
         echo >&2
@@ -63,16 +63,34 @@ function validate_color_encoding_system() {
 }
 
 function convert_videos() {
-    validate_color_encoding_system "$1"
+    local from_color
+    local to_color
+    local results
     
-    local results=()
+    [[ -n "$1" ]] && validate_color_encoding_system "$1"
+    [[ -n "$2" ]] && validate_color_encoding_system "$2"
+    
+    results=()
     for rom_dir in "$ROMS_DIR"/*; do
         if [[ ! -L "$rom_dir" ]]; then # Filter out symlinks.
             if [[ -d "$rom_dir/$VIDEOS_DIR" ]]; then
                 for video in "$rom_dir/$VIDEOS_DIR"/*-video.mp4; do
-                    mkdir -p "$rom_dir/$VIDEOS_DIR/$CONVERTED_VIDEOS_DIR"
-                    avconv -i "$video" -y -pix_fmt "$1" -strict experimental "$rom_dir/$VIDEOS_DIR/$CONVERTED_VIDEOS_DIR/$(basename "$video")" \
-                    && results+=("$(basename "$video") successfully converted!")
+                    if [[ -n "$2" ]]; then
+                        from_color="$1"
+                        to_color="$2"
+                        if avprobe "$video" 2>&1 | grep -q "$from_color"; then
+                            mkdir -p "$rom_dir/$VIDEOS_DIR/$CONVERTED_VIDEOS_DIR"
+                            avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$CONVERTED_VIDEOS_DIR/$(basename "$video")" \
+                            && results+=("$video successfully converted!")
+                        else
+                            results+=("$video doesn't use '$from_color' color encoding system.")
+                        fi
+                    else
+                        to_color="$1"
+                        mkdir -p "$rom_dir/$VIDEOS_DIR/$CONVERTED_VIDEOS_DIR"
+                        avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$CONVERTED_VIDEOS_DIR/$(basename "$video")" \
+                        && results+=("$video successfully converted!")
+                    fi
                 done
             fi
         fi
@@ -86,9 +104,7 @@ function get_options() {
     if [[ -z "$1" ]]; then
         usage
         exit 0
-    fi
-
-    while [[ -n "$1" ]]; do
+    else
         case "$1" in
 #H -h, --help                                   Print the help message and exit.
             -h|--help)
@@ -104,20 +120,18 @@ function get_options() {
                 echo
                 exit 0
                 ;;
-
 #H -c, --convert [color encoding system]        Convert videos to a speficic color encoding system.
             -c|--convert)
                 check_argument "$1" "$2" || exit 1
                 shift
-                convert_videos "$1"
+                convert_videos "$1" "$2"
                 ;;
             *)
-                echo "ERROR: invalid option \"$1\"" >&2
+                echo "ERROR: invalid option '$1'" >&2
                 exit 2
                 ;;
         esac
-        shift
-    done
+    fi
 }
 
 function main() {
