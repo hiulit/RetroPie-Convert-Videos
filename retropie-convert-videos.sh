@@ -11,6 +11,8 @@ home="$(find /home -type d -name RetroPie -print -quit 2>/dev/null)"
 home="${home%/RetroPie}"
 
 readonly SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+readonly SCRIPT_TITLE="Convert videos for RetroPie."
+readonly SCRIPT_DESCRIPTION="A tool for RetroPie to convert videos."
 readonly ROMS_DIR="$home/RetroPie/roms"
 readonly VIDEOS_DIR="images"
 readonly CONVERTED_VIDEOS_DIR="converted"
@@ -67,6 +69,11 @@ function convert_videos() {
     local to_color
     local results
     
+    local successfull
+    successfull=0
+    local unsuccessfull
+    unsuccessfull=0
+    
     [[ -n "$1" ]] && validate_color_encoding_system "$1"
     [[ -n "$2" ]] && validate_color_encoding_system "$2"
     
@@ -81,15 +88,18 @@ function convert_videos() {
                         if avprobe "$video" 2>&1 | grep -q "$from_color"; then
                             mkdir -p "$rom_dir/$VIDEOS_DIR/$CONVERTED_VIDEOS_DIR"
                             avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$CONVERTED_VIDEOS_DIR/$(basename "$video")" \
-                            && results+=("$video successfully converted!")
+                            && results+=("$video successfully converted!") \
+                            && ((successfull++))
                         else
                             results+=("$video doesn't use '$from_color' color encoding system.")
+                            ((unsuccessfull++))
                         fi
                     else
                         to_color="$1"
                         mkdir -p "$rom_dir/$VIDEOS_DIR/$CONVERTED_VIDEOS_DIR"
                         avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$CONVERTED_VIDEOS_DIR/$(basename "$video")" \
-                        && results+=("$video successfully converted!")
+                        && results+=("$video successfully converted!") \
+                        && ((successfull++))
                     fi
                 done
             fi
@@ -98,6 +108,8 @@ function convert_videos() {
     for result in "${results[@]}"; do
         echo "$result"
     done
+    echo "$successfull videos were successfull"
+    echo "$unsuccessfull videos were unsuccessfull"
 }
 
 function get_options() {
@@ -109,8 +121,8 @@ function get_options() {
 #H -h, --help                                   Print the help message and exit.
             -h|--help)
                 echo
-                echo "Convert videos for RetroPie."
-                echo "A tool for RetroPie to convert videos."
+                echo "$SCRIPT_TITLE"
+                echo "$SCRIPT_DESCRIPTION"
                 echo
                 echo "USAGE: $0 [options]"
                 echo
