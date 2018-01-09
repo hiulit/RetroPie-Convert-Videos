@@ -3,6 +3,11 @@
 # Convert videos for RetroPie.
 # A tool for RetroPie to convert videos.
 #
+# Author: hiulit
+# Repository: https://github.com/hiulit/RetroPie-Convert-Videos
+# Issues: https://github.com/hiulit/RetroPie-Convert-Videos/issues
+# License: MIT https://github.com/hiulit/RetroPie-Convert-Videos/blob/master/LICENSE
+#
 # Requirements:
 # - Retropie 4.x.x
 # - libav-tools package
@@ -65,10 +70,10 @@ function check_config() {
     from_color="$(get_config "from_color")"
     to_color="$(get_config "to_color")"
     
-    if [[ -z "$from_color" ]]; then
-        echo "'from_color' not found in '$SCRIPT_CFG'"
-        exit 1
-    fi
+    #~ if [[ -z "$from_color" ]]; then
+        #~ echo "'from_color' not found in '$SCRIPT_CFG'"
+        #~ exit 1
+    #~ fi
     
     if [[ -z "$to_color" ]]; then
         echo "'to_color' not found in '$SCRIPT_CFG'"
@@ -133,6 +138,9 @@ function convert_videos() {
     for rom_dir in "${roms_dir[@]}"; do
         if [[ ! -L "$rom_dir" ]]; then # Filter out symlinks.
             if [[ -d "$rom_dir/$VIDEOS_DIR" ]]; then
+                results+=("------------")
+                results+=("$(basename "$rom_dir")")
+                results+=("------------")
                 for video in "$rom_dir/$VIDEOS_DIR"/*-video.mp4; do
                     if [[ -n "$3" ]]; then
                         from_color="$2"
@@ -140,20 +148,21 @@ function convert_videos() {
                         if avprobe "$video" 2>&1 | grep -q "$from_color"; then
                             mkdir -p "$rom_dir/$VIDEOS_DIR/$CONVERTED_VIDEOS_DIR"
                             avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$CONVERTED_VIDEOS_DIR/$(basename "$video")" \
-                            && results+=("$video -> Successfully converted!") \
+                            && results+=("> $(basename "$video") --> Successfully converted!") \
                             && ((successfull++))
                         else
-                            results+=("$video -> Doesn't use '$from_color' Color Encoding System (C.E.S).")
+                            results+=("> $(basename "$video") --> Doesn't use '$from_color' Color Encoding System (C.E.S).")
                             ((unsuccessfull++))
                         fi
                     else
                         to_color="$2"
                         mkdir -p "$rom_dir/$VIDEOS_DIR/$CONVERTED_VIDEOS_DIR"
                         avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$CONVERTED_VIDEOS_DIR/$(basename "$video")" \
-                        && results+=("$video -> Successfully converted!") \
+                        && results+=("> $(basename "$video") --> Successfully converted!") \
                         && ((successfull++))
                     fi
                 done
+                results+=("")
             fi
         fi
     done
@@ -201,16 +210,18 @@ function get_options() {
                 echo
                 exit 0
                 ;;
-#H -f, --set-from-color [C.E.S] Set Color Encoding System (C.E.S) to convert from.
-            -f|--set-from-color)
+#H -f, --from-color [C.E.S]     Set Color Encoding System (C.E.S) to convert from.
+            -f|--from-color)
                 check_argument "$1" "$2" || exit 1
                 shift
+                validate_CES "$1"
                 set_config "from_color" "$1"
                 ;;
-#H -t, --set-to-color [C.E.S]   Set Color Encoding System (C.E.S) to convert to.
-            -t|--set-to-color)
+#H -t, --to-color [C.E.S]       Set Color Encoding System (C.E.S) to convert to.
+            -t|--to-color)
                 check_argument "$1" "$2" || exit 1
                 shift
+                validate_CES "$1"
                 set_config "to_color" "$1"
                 ;;
 #H -a, --convert-all            Convert all systems.
@@ -239,8 +250,7 @@ function get_options() {
                 
                 cmd=(dialog \
                     --backtitle "$SCRIPT_TITLE" \
-                    --title "title" \
-                    --checklist "text" 20 50 12)
+                    --checklist "Select ROM folders" 15 50 15)
                 
                 systems="$(get_all_systems)"
                 IFS=" " read -r -a systems <<< "${systems[@]}"
