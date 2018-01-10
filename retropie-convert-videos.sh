@@ -69,17 +69,17 @@ function check_config() {
     local to_color
     from_color="$(get_config "from_color")"
     to_color="$(get_config "to_color")"
-    
+
     #~ if [[ -z "$from_color" ]]; then
         #~ echo "'from_color' not found in '$SCRIPT_CFG'"
         #~ exit 1
     #~ fi
-    
+
     if [[ -z "$to_color" ]]; then
         echo "'to_color' not found in '$SCRIPT_CFG'"
         exit 1
     fi
-    
+
     validate_CES "$from_color"
     validate_CES "$to_color"
 }
@@ -94,7 +94,7 @@ function usage() {
 
 function validate_CES() {
     [[ -z "$1" ]] && return 0
-    
+
     if avconv -loglevel quiet -pix_fmts | grep -q -w "$1"; then
         return 0
     else
@@ -121,21 +121,21 @@ function convert_videos() {
     local successfull=0
     local unsuccessfull=0
     local converted_videos_dir
-    
+
     systems="$1"
     IFS=" " read -r -a systems <<< "${systems[@]}"
     for system in "${systems[@]}"; do
         roms_dir+=("$ROMS_DIR/$system")
     done
-    
+
     if [[ "${#roms_dir[@]}" -eq 0 ]]; then
         echo "No system selected"
         exit 1
     fi
-    
+
     [[ -n "$2" ]] && validate_CES "$2"
     [[ -n "$3" ]] && validate_CES "$3"
-    
+
     echo "Starting video conversion ..."
     for rom_dir in "${roms_dir[@]}"; do
         if [[ ! -L "$rom_dir" ]]; then # Filter out symlinks.
@@ -250,31 +250,31 @@ function get_options() {
                 local selected_systems=()
                 local from_color
                 local to_color
-                
+
                 cmd=(dialog \
                     --backtitle "$SCRIPT_TITLE" \
                     --checklist "Select ROM folders" 15 50 15)
-                
+
                 systems="$(get_all_systems)"
                 IFS=" " read -r -a systems <<< "${systems[@]}"
                 for system in "${systems[@]}"; do
                     options+=("$i" "$system" off)
                     ((i++))
                 done
-                
+
                 choices="$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)"
-                
+
                 if [[ -z "${choices[@]}" ]]; then
                     echo "No system selected."
                     exit 1
                 fi
-                
+
                 IFS=" " read -r -a choices <<< "${choices[@]}"
                 for choice in "${choices[@]}"; do
                     selected_systems+=("${options[choice*3-2]}")
                 done
                 selected_systems="${selected_systems[@]}"
-                
+
                 from_color="$(get_config "from_color")"
                 to_color="$(get_config "to_color")"
                 convert_videos "$selected_systems" "$from_color" "$to_color"
