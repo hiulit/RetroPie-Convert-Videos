@@ -18,7 +18,7 @@ home="${home%/RetroPie}"
 readonly SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 readonly SCRIPT_TITLE="Convert videos for RetroPie."
 readonly SCRIPT_DESCRIPTION="A tool for RetroPie to convert videos."
-readonly SCRIPT_CFG="retropie-convert-videos-settings.cfg"
+readonly SCRIPT_CFG="$SCRIPT_DIR/retropie-convert-videos-settings.cfg"
 
 readonly ROMS_DIR="$home/RetroPie/roms"
 readonly VIDEOS_DIR="images"
@@ -120,6 +120,7 @@ function convert_videos() {
     local results=()
     local successfull=0
     local unsuccessfull=0
+    local converted_videos_dir
     
     systems="$1"
     IFS=" " read -r -a systems <<< "${systems[@]}"
@@ -135,6 +136,7 @@ function convert_videos() {
     [[ -n "$2" ]] && validate_CES "$2"
     [[ -n "$3" ]] && validate_CES "$3"
     
+    echo "Starting video conversion ..."
     for rom_dir in "${roms_dir[@]}"; do
         if [[ ! -L "$rom_dir" ]]; then # Filter out symlinks.
             if [[ -d "$rom_dir/$VIDEOS_DIR" ]]; then
@@ -142,12 +144,13 @@ function convert_videos() {
                 results+=("$(basename "$rom_dir")")
                 results+=("------------")
                 for video in "$rom_dir/$VIDEOS_DIR"/*-video.mp4; do
+                    converted_videos_dir="$CONVERTED_VIDEOS_DIR-$to_color"
                     if [[ -n "$3" ]]; then
                         from_color="$2"
                         to_color="$3"
                         if avprobe "$video" 2>&1 | grep -q "$from_color"; then
-                            mkdir -p "$rom_dir/$VIDEOS_DIR/$CONVERTED_VIDEOS_DIR"
-                            avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$CONVERTED_VIDEOS_DIR/$(basename "$video")" \
+                            mkdir -p "$rom_dir/$VIDEOS_DIR/$converted_videos_dir"
+                            avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")" \
                             && results+=("> $(basename "$video") --> Successfully converted!") \
                             && ((successfull++))
                         else
@@ -156,8 +159,8 @@ function convert_videos() {
                         fi
                     else
                         to_color="$2"
-                        mkdir -p "$rom_dir/$VIDEOS_DIR/$CONVERTED_VIDEOS_DIR"
-                        avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$CONVERTED_VIDEOS_DIR/$(basename "$video")" \
+                        mkdir -p "$rom_dir/$VIDEOS_DIR/$converted_videos_dir"
+                        avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")" \
                         && results+=("> $(basename "$video") --> Successfully converted!") \
                         && ((successfull++))
                     fi
@@ -217,8 +220,8 @@ function get_options() {
                 validate_CES "$1"
                 set_config "from_color" "$1"
                 ;;
-#H -t, --to-color [C.E.S]       Set Color Encoding System (C.E.S) to convert to.
-            -t|--to-color)
+#H -t, --to_color [C.E.S]       Set Color Encoding System (C.E.S) to convert to.
+            -t|--to_color)
                 check_argument "$1" "$2" || exit 1
                 shift
                 validate_CES "$1"
