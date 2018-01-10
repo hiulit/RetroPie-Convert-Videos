@@ -109,14 +109,18 @@ When setting the C.E.S using `--from-color` or `--to-color`, the generated value
 # TIP: run the 'avconv -pix_fmts' command to get a full list of Color Encoding Systems (C.E.S).
 
 # From color (optional)
+# Target only the videos with this particular C.E.S.
+# If left blank, it will target all videos, regardless the C.E.S.
 # (e.g. "yuv444p")
 
 from_color = ""
 
 # To color (mandatory)
+# Convert videos to this particular C.E.S.
 # (e.g. "yuv420p")
 
 to_color = ""
+
 ```
 
 You can edit this file directly instead of using `--from-color` or `--to-color`.
