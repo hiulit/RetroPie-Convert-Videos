@@ -99,6 +99,8 @@ Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at lea
 ./retropie-convert-videos.sh --convert-system
 ```
 
+![RetroPie Convert Videos checklist example](examples/retropie-convert-videos-checklist.jpg)
+
 ## Config file
 
 When setting the C.E.S using `--from-color` or `--to-color`, the generated values are stored in `retropie-convert-videos-settings.cfg`.
