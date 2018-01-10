@@ -227,7 +227,7 @@ function get_options() {
                 validate_CES "$1"
                 set_config "to_color" "$1"
                 ;;
-#H -a, --convert-all            Convert all systems.
+#H -a, --convert-all            Convert videos for all systems.
             -a|--convert-all)
                 # CHECK IF SETTINGS ARE SET
                 # IF NOT, EXIT 1
@@ -238,7 +238,7 @@ function get_options() {
                 to_color="$(get_config "to_color")"
                 convert_videos "$(get_all_systems)" "$from_color" "$to_color"
                 ;;
-#H -s, --convert-system         Select a system (or more) to convert.
+#H -s, --convert-system         Select a system (or more) to convert videos.
             -s|--convert-system)
                 local cmd
                 local systems=()
