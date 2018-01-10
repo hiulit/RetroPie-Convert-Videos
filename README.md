@@ -112,7 +112,7 @@ When setting the C.E.S using `--from-color` or `--to-color`, the generated value
 
 # From color (optional)
 # Target only the videos with this particular C.E.S.
-# If left blank, it will target all videos, regardless the C.E.S.
+# If left blank, it will target all videos, regardless of the C.E.S.
 # (e.g. "yuv444p")
 
 from_color = ""
