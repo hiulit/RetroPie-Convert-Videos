@@ -28,8 +28,8 @@ Use '--help' to see all the options.
 ## Options
 
 * `--help`: Print the help message and exit.
-* `--from-color [C.E.S]`: Set Color Encoding System (C.E.S) to convert from.
-* `--to-color [C.E.S]`: Set Color Encoding System (C.E.S) to convert to.
+* `--from-color [OPTIONS]`: Set Color Encoding System (C.E.S) to convert from.
+* `--to-color [OPTIONS]`: Set Color Encoding System (C.E.S) to convert to.
 * `--convert-all`: Convert videos for all systems.
 * `--convert-system`: Select a system (or more) to convert videos.
 
@@ -77,6 +77,8 @@ Set Color Encoding System (C.E.S) to convert to.
 
 Convert videos for all systems.
 
+Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at least the `from_color` key has any value.
+
 #### Example
 
 ```
@@ -89,8 +91,54 @@ Select a system (or more) to convert videos.
 
 Displays a checklist from which one or more systems can be selected.
 
+Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at least the `from_color` key has any value.
+
 #### Example
 
 ```
 ./retropie-convert-videos.sh --convert-system
 ```
+
+## Config file
+
+When setting the C.E.S using `--from-color` or `--to-color`, the generated values are stored in `retropie-convert-videos-settings.cfg`.
+
+```
+# Settings for RetroPie Convert Videos.
+#
+# TIP: run the 'avconv -pix_fmts' command to get a full list of Color Encoding Systems (C.E.S).
+
+# From color (optional)
+# (e.g. "yuv444p")
+
+from_color = ""
+
+# To color (mandatory)
+# (e.g. "yuv420p")
+
+to_color = ""
+```
+
+You can edit this file directly instead of using `--from-color` or `--to-color`.
+
+## Changelog
+
+See [CHANGELOG](/CHANGELOG.md).
+
+## Contributing
+
+See [CONTRIBUTING](/CONTRIBUTING.md).
+
+## Authors
+
+* Me 😛 [@hiulit](https://github.com/hiulit).
+
+## Credits
+
+Thanks to:
+
+* [Clyde](https://retropie.org.uk/forum/user/clyde) - For [posting the code in the RetroPie forum](https://retropie.org.uk/forum/topic/15362/here-s-a-script-to-batch-convert-yuv-4-4-4-videos-to-yuv-4-2-0-in-retropie-linux) that inspired this script.
+
+## License
+
+[MIT License](/LICENSE).
