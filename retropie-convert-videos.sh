@@ -288,12 +288,12 @@ function get_options() {
 }
 
 function main() {
-    check_dependencies
-
     if ! is_retropie; then
         echo "ERROR: RetroPie is not installed. Aborting ..." >&2
         exit 1
     fi
+
+    check_dependencies
 
     get_options "$@"
 }
