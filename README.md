@@ -2,6 +2,14 @@
 
 A tool for RetroPie to convert videos.
 
+**WARNING: The Raspberry Pi doesn't have that much power and converting videos is very demanding. It takes about 35 seconds to convert a video, so if you have a lot of videos... Do the math ;)**
+
+## Prerequisites
+
+At this moment this script works only with videos downloaded using [Steven Selph's Scraper](https://github.com/retropie/retropie-setup/wiki/scraper#steven-selphs-scraper).
+
+**Gamelist** option in Steven Selph's Scraper must be set to **Overwrite**.
+
 ## Installation
 
 ```
