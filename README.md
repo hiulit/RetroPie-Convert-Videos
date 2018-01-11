@@ -6,9 +6,9 @@ A tool for RetroPie to convert videos.
 
 ## Prerequisites
 
-At this moment this script works only with videos downloaded using [Steven Selph's Scraper](https://github.com/retropie/retropie-setup/wiki/scraper#steven-selphs-scraper).
+At this moment this script only works with videos downloaded using [Steven Selph's Scraper](https://github.com/retropie/retropie-setup/wiki/scraper#steven-selphs-scraper).
 
-**Gamelist** option in Steven Selph's Scraper must be set to **Overwrite**.
+**Use rom folder for gamelist & images** option in Steven Selph's Scraper must be set to **Enabled**.
 
 ## Installation
 
