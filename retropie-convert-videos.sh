@@ -220,8 +220,8 @@ function get_options() {
                 validate_CES "$1"
                 set_config "from_color" "$1"
                 ;;
-#H -t, --to_color [C.E.S]       Set Color Encoding System (C.E.S) to convert to.
-            -t|--to_color)
+#H -t, --to-color [C.E.S]       Set Color Encoding System (C.E.S) to convert to.
+            -t|--to-color)
                 check_argument "$1" "$2" || exit 1
                 shift
                 validate_CES "$1"
