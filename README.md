@@ -122,7 +122,6 @@ from_color = ""
 # (e.g. "yuv420p")
 
 to_color = ""
-
 ```
 
 You can edit this file directly instead of using `--from-color` or `--to-color`.
