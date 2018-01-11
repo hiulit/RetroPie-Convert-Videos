@@ -2,7 +2,9 @@
 
 ## [Unreleased]
 
-* Up to date
+### Fixed
+
+* Fixed git clone URL in README.md.
 
 ## [1.0.1] - 2018-01-11
 

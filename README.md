@@ -14,7 +14,7 @@ At this moment this script only works with videos downloaded using [Steven Selph
 
 ```
 cd /home/pi/
-git clone https://github.com/hiulit/RetroPie-Convert-Videos/.git
+git clone https://github.com/hiulit/RetroPie-Convert-Videos.git
 cd RetroPie-Convert-Videos/
 sudo chmod +x retropie-convert-videos.sh
 ```
