@@ -28,8 +28,8 @@ Use '--help' to see all the options.
 ## Options
 
 * `--help`: Print the help message and exit.
-* `--from-color [OPTIONS]`: Set Color Encoding System (C.E.S) to convert from. *(optional)*
-* `--to-color [OPTIONS]`: Set Color Encoding System (C.E.S) to convert to. *(mandatory)*
+* `--from-color [OPTIONS]`: Set Color Encoding System (C.E.S) to convert from. **(optional)**
+* `--to-color [OPTIONS]`: Set Color Encoding System (C.E.S) to convert to. **(mandatory)**
 * `--convert-all`: Convert videos for all systems.
 * `--convert-system`: Select a system (or more) to convert videos.
 
@@ -45,7 +45,7 @@ Print the help message and exit.
 ./retropie-convert-videos.sh --help
 ```
 
-### `--from-color [OPTIONS]` *(optional)*
+### `--from-color [OPTIONS]` (optional)
 
 Set Color Encoding System (C.E.S) to convert from.
 
@@ -62,7 +62,7 @@ If left blank, it will target all videos, regardless of the C.E.S.
 ./retropie-convert-videos.sh --from-color yuv444p
 ```
 
-### `--to-color [OPTIONS]` *(mandatory)*
+### `--to-color [OPTIONS]` (mandatory)
 
 Set Color Encoding System (C.E.S) to convert to.
 
