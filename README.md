@@ -77,7 +77,7 @@ Set Color Encoding System (C.E.S) to convert to.
 
 Convert videos for all systems.
 
-Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at least the `from_color` key has any value.
+Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at least the `to_color` key has any value.
 
 #### Example
 
@@ -91,7 +91,7 @@ Select a system (or more) to convert videos.
 
 Displays a checklist from which one or more systems can be selected.
 
-Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at least the `from_color` key has any value.
+Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at least the `to_color` key has any value.
 
 #### Example
 
@@ -111,7 +111,7 @@ When setting the C.E.S using `--from-color` or `--to-color`, the generated value
 # TIP: run the 'avconv -pix_fmts' command to get a full list of Color Encoding Systems (C.E.S).
 
 # From color (optional)
-# Target only the videos with this particular C.E.S.
+# Target only videos with this particular C.E.S.
 # If left blank, it will target all videos, regardless of the C.E.S.
 # (e.g. "yuv444p")
 
