@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+* Up to date
+
+## [1.0.1] - 2018-01-11
+
 ### Fixed
 
 * Changed `--from_color` option to `--from-color`.
