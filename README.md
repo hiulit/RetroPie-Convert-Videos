@@ -77,7 +77,7 @@ Set Color Encoding System (C.E.S) to convert to.
 
 Convert videos for all systems.
 
-Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at least the `to_color` key has any value.
+Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at least the `to_color` key has a value.
 
 #### Example
 
@@ -91,7 +91,7 @@ Select a system (or more) to convert videos.
 
 Displays a checklist from which one or more systems can be selected.
 
-Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at least the `to_color` key has any value.
+Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at least the `to_color` key has a value.
 
 #### Example
 
