@@ -111,6 +111,20 @@ function validate_CES() {
     fi
 }
 
+function convert_video() {
+	mkdir -p "$rom_dir/$VIDEOS_DIR/$converted_videos_dir"
+	avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")"
+	result=$?
+	if [[ $result -eq 0 ]]; then
+		results+=("> $(basename "$video") --> Successfully converted!")
+		((successfull++))
+	else
+		results+=("> $(basename "$video") --> FAILED with result $result.")
+		((unsuccessfull++))								
+		mv "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")" "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")-failed"
+	fi							
+}
+
 function convert_videos() {
     local systems=()
     local roms_dir=()
@@ -123,6 +137,7 @@ function convert_videos() {
     local converted_videos_dir
 
     systems="$1"
+
     IFS=" " read -r -a systems <<< "${systems[@]}"
     for system in "${systems[@]}"; do
         roms_dir+=("$ROMS_DIR/$system")
@@ -137,6 +152,7 @@ function convert_videos() {
     [[ -n "$3" ]] && validate_CES "$3"
 
     echo "Starting video conversion ..."
+	
     for rom_dir in "${roms_dir[@]}"; do
         if [[ ! -L "$rom_dir" ]]; then # Filter out symlinks.
             if [[ -d "$rom_dir/$VIDEOS_DIR" ]]; then
@@ -144,25 +160,20 @@ function convert_videos() {
                 results+=("$(basename "$rom_dir")")
                 results+=("------------")
                 for video in "$rom_dir/$VIDEOS_DIR"/*-video.mp4; do
-                    converted_videos_dir="$CONVERTED_VIDEOS_DIR-$to_color"
                     if [[ -n "$3" ]]; then
-                        from_color="$2"
-                        to_color="$3"
+						from_color="$2"
+						to_color="$3"
+						converted_videos_dir="$CONVERTED_VIDEOS_DIR-$to_color"
                         if avprobe "$video" 2>&1 | grep -q "$from_color"; then
-                            mkdir -p "$rom_dir/$VIDEOS_DIR/$converted_videos_dir"
-                            avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")" \
-                            && results+=("> $(basename "$video") --> Successfully converted!") \
-                            && ((successfull++))
+							convert_video
                         else
                             results+=("> $(basename "$video") --> Doesn't use '$from_color' Color Encoding System (C.E.S).")
                             ((unsuccessfull++))
                         fi
                     else
                         to_color="$2"
-                        mkdir -p "$rom_dir/$VIDEOS_DIR/$converted_videos_dir"
-                        avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")" \
-                        && results+=("> $(basename "$video") --> Successfully converted!") \
-                        && ((successfull++))
+						converted_videos_dir="$CONVERTED_VIDEOS_DIR-$to_color"
+						convert_video
                     fi
                 done
                 results+=("")
@@ -288,6 +299,7 @@ function get_options() {
 }
 
 function main() {
+
     if ! is_retropie; then
         echo "ERROR: RetroPie is not installed. Aborting ..." >&2
         exit 1
