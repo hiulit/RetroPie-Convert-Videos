@@ -71,10 +71,10 @@ function check_config() {
     to_color="$(get_config "to_color")"
 
     if [[ -z "$to_color" ]]; then
-        echo
-        echo "'to_color' value (mandatory) not found in '$SCRIPT_CFG'"
-        echo
-        echo "Use '$0 --help' to see all the options."
+        echo >&2
+        echo "'to_color' value (mandatory) not found in '$SCRIPT_CFG'" >&2
+        echo >&2
+        echo "Try '$0 --help' for more info." >&2
         exit 1
     fi
 
@@ -118,9 +118,9 @@ function convert_video() {
         ((successfull++))
     else
         results+=("> $(basename "$video") --> FAILED!")
-        ((unsuccessfull++))								
+        ((unsuccessfull++))
         mv "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")" "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")-failed"
-    fi							
+    fi
 }
 
 function convert_videos() {
@@ -150,7 +150,7 @@ function convert_videos() {
     [[ -n "$3" ]] && validate_CES "$3"
 
     echo "Starting video conversion ..."
-    
+
     for rom_dir in "${roms_dir[@]}"; do
         if [[ ! -L "$rom_dir" ]]; then # Filter out symlinks.
             if [[ -d "$rom_dir/$VIDEOS_DIR" ]]; then
@@ -271,7 +271,7 @@ function get_options() {
                 local to_color
 
                 check_config
-                
+
                 cmd=(dialog \
                     --backtitle "$SCRIPT_TITLE" \
                     --checklist "Select ROM folders" 15 50 15)
