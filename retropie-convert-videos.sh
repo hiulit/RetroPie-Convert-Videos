@@ -70,13 +70,11 @@ function check_config() {
     from_color="$(get_config "from_color")"
     to_color="$(get_config "to_color")"
 
-    #~ if [[ -z "$from_color" ]]; then
-        #~ echo "'from_color' not found in '$SCRIPT_CFG'"
-        #~ exit 1
-    #~ fi
-
     if [[ -z "$to_color" ]]; then
-        echo "'to_color' not found in '$SCRIPT_CFG'"
+        echo
+        echo "'to_color' value (mandatory) not found in '$SCRIPT_CFG'"
+        echo
+        echo "Use '$0 --help' to see all the options."
         exit 1
     fi
 
@@ -88,7 +86,7 @@ function usage() {
     echo
     echo "USAGE: $0 [options]"
     echo
-    echo "Use '--help' to see all the options."
+    echo "Use '$0 --help' to see all the options."
     echo
 }
 
@@ -111,6 +109,20 @@ function validate_CES() {
     fi
 }
 
+function convert_video() {
+    mkdir -p "$rom_dir/$VIDEOS_DIR/$converted_videos_dir"
+    avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")"
+    result_value="$?"
+    if [[ "$result_value" -eq 0 ]]; then
+        results+=("> $(basename "$video") --> Successfully converted!")
+        ((successfull++))
+    else
+        results+=("> $(basename "$video") --> FAILED!")
+        ((unsuccessfull++))								
+        mv "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")" "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")-failed"
+    fi							
+}
+
 function convert_videos() {
     local systems=()
     local roms_dir=()
@@ -123,6 +135,7 @@ function convert_videos() {
     local converted_videos_dir
 
     systems="$1"
+
     IFS=" " read -r -a systems <<< "${systems[@]}"
     for system in "${systems[@]}"; do
         roms_dir+=("$ROMS_DIR/$system")
@@ -137,6 +150,7 @@ function convert_videos() {
     [[ -n "$3" ]] && validate_CES "$3"
 
     echo "Starting video conversion ..."
+    
     for rom_dir in "${roms_dir[@]}"; do
         if [[ ! -L "$rom_dir" ]]; then # Filter out symlinks.
             if [[ -d "$rom_dir/$VIDEOS_DIR" ]]; then
@@ -144,25 +158,20 @@ function convert_videos() {
                 results+=("$(basename "$rom_dir")")
                 results+=("------------")
                 for video in "$rom_dir/$VIDEOS_DIR"/*-video.mp4; do
-                    converted_videos_dir="$CONVERTED_VIDEOS_DIR-$to_color"
                     if [[ -n "$3" ]]; then
                         from_color="$2"
                         to_color="$3"
+                        converted_videos_dir="$CONVERTED_VIDEOS_DIR-$to_color"
                         if avprobe "$video" 2>&1 | grep -q "$from_color"; then
-                            mkdir -p "$rom_dir/$VIDEOS_DIR/$converted_videos_dir"
-                            avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")" \
-                            && results+=("> $(basename "$video") --> Successfully converted!") \
-                            && ((successfull++))
+                            convert_video
                         else
                             results+=("> $(basename "$video") --> Doesn't use '$from_color' Color Encoding System (C.E.S).")
                             ((unsuccessfull++))
                         fi
                     else
                         to_color="$2"
-                        mkdir -p "$rom_dir/$VIDEOS_DIR/$converted_videos_dir"
-                        avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")" \
-                        && results+=("> $(basename "$video") --> Successfully converted!") \
-                        && ((successfull++))
+                        converted_videos_dir="$CONVERTED_VIDEOS_DIR-$to_color"
+                        convert_video
                     fi
                 done
                 results+=("")
@@ -174,8 +183,20 @@ function convert_videos() {
         echo "$result"
     done
     echo
-    [[ "$successfull" -gt 0 ]] && echo "$successfull videos were successfull."
-    [[ "$unsuccessfull" -gt 0 ]] && echo  "$unsuccessfull videos were unsuccessfull."
+    if [[ "$successfull" -gt 0 ]]; then
+        if [[ "$successfull" -gt 1 ]]; then
+            echo "$successfull videos were successfull."
+        else
+            echo "$successfull video was successfull."
+        fi
+    fi
+    if [[ "$unsuccessfull" -gt 0 ]]; then
+        if [[ "$unsuccessfull" -gt 1 ]]; then
+            echo  "$unsuccessfull videos were unsuccessfull."
+        else
+            echo  "$unsuccessfull video was unsuccessfull."
+        fi
+    fi
 }
 
 function get_all_systems() {
@@ -229,8 +250,6 @@ function get_options() {
                 ;;
 #H -a, --convert-all            Convert videos for all systems.
             -a|--convert-all)
-                # CHECK IF SETTINGS ARE SET
-                # IF NOT, EXIT 1
                 check_config
                 local from_color
                 local to_color
@@ -251,6 +270,8 @@ function get_options() {
                 local from_color
                 local to_color
 
+                check_config
+                
                 cmd=(dialog \
                     --backtitle "$SCRIPT_TITLE" \
                     --checklist "Select ROM folders" 15 50 15)
@@ -288,6 +309,7 @@ function get_options() {
 }
 
 function main() {
+
     if ! is_retropie; then
         echo "ERROR: RetroPie is not installed. Aborting ..." >&2
         exit 1
