@@ -2,9 +2,18 @@
 
 ## [Unreleased]
 
+* Up to date
+
+## [1.0.2] - 2018-02-06
+
 ### Fixed
 
-* Fixed git clone URL in README.md.
+* Fixed some outputs.
+* Fixed git clone URL in `README.md`.
+
+### Added
+
+* Merged [#3](https://github.com/hiulit/RetroPie-Convert-Videos/pull/3) - Thanks to [Dan Edwards](https://github.com/edwardsd97) 
 
 ## [1.0.1] - 2018-01-11
 
