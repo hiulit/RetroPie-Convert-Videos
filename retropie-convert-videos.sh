@@ -30,6 +30,7 @@ function is_retropie() {
     [[ -d "$home/RetroPie" && -d "$home/.emulationstation" && -d "/opt/retropie" ]]
 }
 
+
 function check_dependencies() {
     if ! which avconv > /dev/null; then
         echo "ERROR: The libav-tools package is not installed!" >&2
@@ -37,6 +38,7 @@ function check_dependencies() {
         exit 1
     fi
 }
+
 
 function check_argument() {
     # XXX: this method doesn't accept arguments starting with '-'.
@@ -50,10 +52,12 @@ function check_argument() {
     fi
 }
 
+
 function set_config() {
     sed -i "s|^\($1\s*=\s*\).*|\1\"$2\"|" "$SCRIPT_CFG"
     echo "\"$1\" set to \"$2\"."
 }
+
 
 function get_config() {
     local config
@@ -62,6 +66,7 @@ function get_config() {
     config="${config#\"}"
     echo "$config"
 }
+
 
 function check_config() {
     CONFIG_FLAG=1
@@ -82,6 +87,7 @@ function check_config() {
     validate_CES "$to_color"
 }
 
+
 function usage() {
     echo
     echo "USAGE: $0 [options]"
@@ -89,6 +95,7 @@ function usage() {
     echo "Use '$0 --help' to see all the options."
     echo
 }
+
 
 function validate_CES() {
     [[ -z "$1" ]] && return 0
@@ -109,6 +116,7 @@ function validate_CES() {
     fi
 }
 
+
 function convert_video() {
     mkdir -p "$rom_dir/$VIDEOS_DIR/$converted_videos_dir"
     avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")"
@@ -122,6 +130,7 @@ function convert_video() {
         mv "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")" "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")-failed"
     fi
 }
+
 
 function convert_videos() {
     local systems=()
@@ -199,6 +208,7 @@ function convert_videos() {
     fi
 }
 
+
 function get_all_systems() {
     local all_systems=()
     local system_dir
@@ -213,6 +223,7 @@ function get_all_systems() {
     done
     echo "${all_systems[@]}"
 }
+
 
 function get_options() {
     if [[ -z "$1" ]]; then
@@ -308,6 +319,7 @@ function get_options() {
     fi
 }
 
+
 function main() {
 
     if ! is_retropie; then
@@ -319,5 +331,6 @@ function main() {
 
     get_options "$@"
 }
+
 
 main "$@"
