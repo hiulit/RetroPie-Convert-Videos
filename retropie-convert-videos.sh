@@ -40,6 +40,19 @@ function check_dependencies() {
 }
 
 
+function underline() {
+    local dashes
+    local string="$1"
+    if [[ -z "$string" ]]; then
+        error_report
+        log "Missing a string as an argument."
+        exit 1
+    fi
+    echo "$string"
+    for ((i=1; i<="${#string}"; i+=1)); do [[ -n "$dashes" ]] && dashes+="-" || dashes="-"; done && echo "$dashes"
+}
+
+
 function check_argument() {
     # XXX: this method doesn't accept arguments starting with '-'.
     if [[ -z "$2" || "$2" =~ ^- ]]; then
@@ -118,18 +131,35 @@ function validate_CES() {
 
 
 function convert_video() {
+    if [[ -z "$1" ]]; then
+        echo "ERROR: In line ${BASH_LINENO}." >&2
+        echo "'${FUNCNAME[0]}' function needs a path to a video file."
+        exit 1
+    fi
+
     mkdir -p "$rom_dir/$VIDEOS_DIR/$converted_videos_dir"
     avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")"
     result_value="$?"
     if [[ "$result_value" -eq 0 ]]; then
-        results+=("> $(basename "$video") --> Successfully converted!")
+        results+=("> \"$(basename "$video")\" --> \e[32mSuccessfully converted!\e[0m")
         ((successfull++))
     else
-        results+=("> $(basename "$video") --> FAILED!")
+        results+=("> \"$(basename "$video")\" --> \e[0mFAILED!\e[0m")
         ((unsuccessfull++))
         mv "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")" "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")-failed"
     fi
 }
+
+function check_CES() {
+    if [[ -z "$1" ]]; then
+        echo "ERROR: No video input file detected." >&2
+        exit 1
+    fi
+    local CES
+    CES="$(avprobe -show_streams "$1" | grep -Po "(?<=^pix_fmt=).*")"
+    echo "$CES"
+}
+
 
 
 function convert_videos() {
@@ -151,7 +181,7 @@ function convert_videos() {
     done
 
     if [[ "${#roms_dir[@]}" -eq 0 ]]; then
-        echo "No system selected"
+        echo "No systems selected" >&2
         exit 1
     fi
 
@@ -159,20 +189,19 @@ function convert_videos() {
     [[ -n "$3" ]] && validate_CES "$3"
 
     echo "Starting video conversion ..."
+    echo ""
 
     for rom_dir in "${roms_dir[@]}"; do
         if [[ ! -L "$rom_dir" ]]; then # Filter out symlinks.
             if [[ -d "$rom_dir/$VIDEOS_DIR" ]]; then
-                results+=("------------")
-                results+=("$(basename "$rom_dir")")
-                results+=("------------")
+                results+=("$(underline "$(basename "$rom_dir")")")
                 for video in "$rom_dir/$VIDEOS_DIR"/*-video.mp4; do
                     if [[ -n "$3" ]]; then
                         from_color="$2"
                         to_color="$3"
                         converted_videos_dir="$CONVERTED_VIDEOS_DIR-$to_color"
                         if avprobe "$video" 2>&1 | grep -q "$from_color"; then
-                            convert_video
+                            convert_video "$video"
                         else
                             results+=("> $(basename "$video") --> Doesn't use '$from_color' Color Encoding System (C.E.S).")
                             ((unsuccessfull++))
@@ -180,7 +209,7 @@ function convert_videos() {
                     else
                         to_color="$2"
                         converted_videos_dir="$CONVERTED_VIDEOS_DIR-$to_color"
-                        convert_video
+                        convert_video "$video"
                     fi
                 done
                 results+=("")
@@ -189,7 +218,7 @@ function convert_videos() {
     done
     echo
     for result in "${results[@]}"; do
-        echo "$result"
+        echo -e "$result"
     done
     echo
     if [[ "$successfull" -gt 0 ]]; then
@@ -278,34 +307,69 @@ function get_options() {
                 local choices
                 local choice
                 local selected_systems=()
+                local no_found_systems=()
                 local from_color
                 local to_color
 
                 check_config
 
-                cmd=(dialog \
-                    --backtitle "$SCRIPT_TITLE" \
-                    --checklist "Select ROM folders" 15 50 15)
+                if [[ -n "$2" ]]; then
+                    local input_systems=("$2")
+                    IFS=" " read -r -a input_systems <<< "${input_systems[@]}"
 
-                systems="$(get_all_systems)"
-                IFS=" " read -r -a systems <<< "${systems[@]}"
-                for system in "${systems[@]}"; do
-                    options+=("$i" "$system" off)
-                    ((i++))
-                done
+                    systems="$(get_all_systems)"
+                    IFS=" " read -r -a systems <<< "${systems[@]}"
 
-                choices="$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)"
+                    for system in "${systems[@]}"; do
+                        for input_system in "${input_systems[@]}"; do
+                            if [[ "$input_system" == "$system" ]]; then
+                                selected_systems+=("$input_system")
+                            fi
+                        done
+                    done
 
-                if [[ -z "${choices[@]}" ]]; then
-                    echo "No system selected."
-                    exit 1
+                    for input_system in ${input_systems[@]}; do
+                        if ! printf '%s\n' "${selected_systems[@]}" | grep -w "$input_system" &>/dev/null; then
+                            no_found_systems+=("$input_system")
+                        fi
+                    done
+
+                    if [[ "${#selected_systems[@]}" -eq 0 ]]; then
+                        echo "ERROR: No videos found for any of the inputted ('${input_systems[@]}') systems!" >&2
+                        echo "Aborting ..."
+                        exit 1
+                    else
+                        if [[ "${#no_found_systems[@]}" -gt 0 ]]; then
+                            echo "No videos found for the following systems: '"${no_found_systems[@]}"'." >&2
+                        fi
+                        echo "Systems found: '${selected_systems[@]}'."
+                    fi
+                    exit
+                else
+                    cmd=(dialog \
+                        --backtitle "$SCRIPT_TITLE" \
+                        --checklist "Select ROM folders" 15 50 15)
+
+                    systems="$(get_all_systems)"
+                    IFS=" " read -r -a systems <<< "${systems[@]}"
+                    for system in "${systems[@]}"; do
+                        options+=("$i" "$system" off)
+                        ((i++))
+                    done
+
+                    choices="$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)"
+
+                    if [[ -z "${choices[@]}" ]]; then
+                        echo "No systems selected." >&2
+                        exit 1
+                    fi
+
+                    IFS=" " read -r -a choices <<< "${choices[@]}"
+                    for choice in "${choices[@]}"; do
+                        selected_systems+=("${options[choice*3-2]}")
+                    done
+                    selected_systems="${selected_systems[@]}"
                 fi
-
-                IFS=" " read -r -a choices <<< "${choices[@]}"
-                for choice in "${choices[@]}"; do
-                    selected_systems+=("${options[choice*3-2]}")
-                done
-                selected_systems="${selected_systems[@]}"
 
                 from_color="$(get_config "from_color")"
                 to_color="$(get_config "to_color")"
