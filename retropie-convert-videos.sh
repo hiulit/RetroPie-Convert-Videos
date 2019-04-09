@@ -24,11 +24,17 @@ readonly SCRIPT_DESCRIPTION="A tool for RetroPie to convert videos."
 readonly SCRIPT_CFG="$SCRIPT_DIR/retropie-convert-videos-settings.cfg"
 
 readonly ROMS_DIR="$home/RetroPie/roms"
-readonly VIDEOS_DIR="images"
 readonly CONVERTED_VIDEOS_DIR="converted"
 
 readonly LOG_DIR="$SCRIPT_DIR/logs"
 readonly LOG_FILE="$LOG_DIR/$(date +%F-%T).log"
+
+
+# Variables #####################################
+
+readonly SCRAPERS=("sselph" "skyscraper")
+
+VIDEOS_DIR=""
 
 
 # Flags #########################################
@@ -41,7 +47,7 @@ CONFIG_FLAG=0
 source "$SCRIPT_DIR/utils/base.sh"
 
 
-# Functions ######################################
+# Functions #####################################
 
 function is_retropie() {
     [[ -d "$home/RetroPie" && -d "$home/.emulationstation" && -d "/opt/retropie" ]]
@@ -61,7 +67,6 @@ function underline() {
     local dashes
     local string="$1"
     if [[ -z "$string" ]]; then
-        error_report
         log "Missing a string as an argument."
         exit 1
     fi
@@ -73,11 +78,9 @@ function underline() {
 function check_argument() {
     # XXX: this method doesn't accept arguments starting with '-'.
     if [[ -z "$2" || "$2" =~ ^- ]]; then
-        echo >&2
         echo "ERROR: '$1' is missing an argument." >&2
         echo >&2
         echo "Try '$0 --help' for more info." >&2
-        echo >&2
         return 1
     fi
 }
@@ -102,17 +105,26 @@ function check_config() {
     CONFIG_FLAG=1
     local from_color
     local to_color
+    local scraper
     from_color="$(get_config "from_color")"
     to_color="$(get_config "to_color")"
+    scraper="$(get_config "scraper")"
 
     if [[ -z "$to_color" ]]; then
-        log >&2
         log "'to_color' value (mandatory) not found in '$SCRIPT_CFG'" >&2
         log >&2
         log "Try '$0 --help' for more info." >&2
         exit 1
     fi
 
+    if [[ -z "$scraper" ]]; then
+        log "'scraper' value (mandatory) not found in '$SCRIPT_CFG'" >&2
+        log >&2
+        log "Try '$0 --help' for more info." >&2
+        exit 1
+    fi
+
+    validate_scraper "$scraper"
     validate_CES "$from_color"
     validate_CES "$to_color"
 }
@@ -128,33 +140,59 @@ function usage() {
 
 
 function validate_CES() {
-    [[ -z "$1" ]] && return 0
+    local ces
+    ces="$1"
 
-    if avconv -loglevel quiet -pix_fmts | grep -q -w "$1"; then
+    [[ -z "$ces" ]] && return 0
+
+    if avconv -loglevel quiet -pix_fmts | grep -q -w "$ces"; then
         return 0
     else
-        log >&2
-        log "ERROR: invalid color encoding system '$1'." >&2
+        log "ERROR: Invalid Color Encoding System (C.E.S): '$ces'." >&2
         log >&2
         if [[ "$CONFIG_FLAG" -eq 1 ]]; then
             log "Check '$SCRIPT_CFG'" >&2
             log >&2
         fi
-        log "TIP: run the 'avconv -pix_fmts' command to get a full list of Color Encoding Systems (C.E.S)." >&2
-        log >&2
+        log "TIP: Run the 'avconv -pix_fmts' command to get a full list of Color Encoding Systems (C.E.S)." >&2
         exit 1
+    fi
+}
+
+function validate_scraper() {
+    local scraper
+    scraper="$1"
+
+    if ! printf '%s\n' "${SCRAPERS[@]}" | grep -w "$scraper" &>/dev/null; then
+        log "The '$scraper' scraper is not supported." >&2
+        log >&2
+        log "Try one of the supported scrapers:" >&2
+        for item in ${SCRAPERS[@]}; do
+            log "- $item" >&2
+        done
+        exit 1
+    fi
+
+    if [[ "$scraper" == "sselph" ]]; then
+        VIDEOS_DIR="images"
+    elif [[ "$scraper" == "skyscraper" ]]; then
+        VIDEOS_DIR="media"
     fi
 }
 
 
 function convert_video() {
-    if [[ -z "$1" ]]; then
-        echo "ERROR: In line ${BASH_LINENO}." >&2
-        echo "'${FUNCNAME[0]}' function needs a path to a video file."
+    local video
+    video="$1"
+
+    if [[ -z "$video" ]]; then
+        log "ERROR: In line ${BASH_LINENO}." >&2
+        log "'${FUNCNAME[0]}' function needs a path to a video file."
         exit 1
     fi
 
     mkdir -p "$rom_dir/$VIDEOS_DIR/$converted_videos_dir"
+
     avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")"
     result_value="$?"
     if [[ "$result_value" -eq 0 ]]; then
@@ -169,12 +207,16 @@ function convert_video() {
 
 
 function check_CES() {
-    if [[ -z "$1" ]]; then
-        echo "ERROR: No video input file detected." >&2
+    local video
+    video="$1"
+
+    if [[ -z "$video" ]]; then
+        log "ERROR: No video input file detected." >&2
         exit 1
     fi
+
     local CES
-    CES="$(avprobe -show_streams "$1" | grep -Po "(?<=^pix_fmt=).*")"
+    CES="$(avprobe -show_streams "$video" | grep -Po "(?<=^pix_fmt=).*")"
     echo "$CES"
 }
 
@@ -279,7 +321,7 @@ function get_options() {
         exit 0
     else
         case "$1" in
-#H -h, --help                   Print the help message and exit.
+#H -h, --help                       Print the help message and exit.
             -h|--help)
                 echo
                 echo "$SCRIPT_TITLE"
@@ -293,21 +335,27 @@ function get_options() {
                 echo
                 exit 0
                 ;;
-#H -f, --from-color [C.E.S]     Set Color Encoding System (C.E.S) to convert from.
+#H -f, --from-color [C.E.S]         Set Color Encoding System (C.E.S) to convert from.
             -f|--from-color)
                 check_argument "$1" "$2" || exit 1
                 shift
                 validate_CES "$1"
                 set_config "from_color" "$1"
                 ;;
-#H -t, --to-color [C.E.S]       Set Color Encoding System (C.E.S) to convert to.
+#H -t, --to-color [C.E.S]           Set Color Encoding System (C.E.S) to convert to.
             -t|--to-color)
                 check_argument "$1" "$2" || exit 1
                 shift
                 validate_CES "$1"
                 set_config "to_color" "$1"
                 ;;
-#H -a, --convert-all            Convert videos for all systems.
+#H -r, --scraper                    Set the scraper.
+            -r|--scraper)
+                check_argument "$1" "$2" || exit 1
+                shift
+                set_config "scraper" "$1"
+                ;;
+#H -a, --convert-all                Convert videos for all systems.
             -a|--convert-all)
                 check_config
                 local from_color
@@ -316,8 +364,8 @@ function get_options() {
                 to_color="$(get_config "to_color")"
                 convert_videos "$(get_all_systems)" "$from_color" "$to_color"
                 ;;
-#H -s, --convert-system         Select a system (or more) to convert videos.
-            -s|--convert-system)
+#H -s, --convert-systems [SYSTEMS]  Select systems to convert videos.
+            -s|--convert-systems)
                 local cmd
                 local systems=()
                 local system
@@ -377,6 +425,21 @@ function get_options() {
                         --checklist "Select ROM folders" 15 50 15)
 
                     systems="$(get_all_systems)"
+                    if [[ "${systems[@]}" -eq 0 ]]; then
+                        local scraper
+                        scraper="$(get_config "scraper")"
+                        log "ERROR: There are no systems with videos!" >&2
+                        log >&2
+                        log "You are using '$scraper' scraper." >&2
+                        if [[ "$scraper" == "sselph" ]]; then
+                            log "Remember to use the 'ROM folder for gamelists & images' option." >&2
+                        elif [[ "$scraper" == "skyscraper" ]]; then
+                            log "Remember to use the 'ROM folder for gamelists & media' option." >&2
+                        fi
+                        log >&2
+                        log "Or maybe try using '$(printf '%s\n' "${SCRAPERS[@]}" | grep -Fv "$scraper")'." >&2
+                        exit 1
+                    fi
                     IFS=" " read -r -a systems <<< "${systems[@]}"
                     for system in "${systems[@]}"; do
                         options+=("$i" "$system" off)
