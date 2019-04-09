@@ -2,7 +2,11 @@
 
 ## [Unreleased]
 
-* Up to date
+### Added
+
+* `--convert-system` now accepts systems as (optional) arguments (e.g. `--convert-system "nes snes"`).
+* The script detects the **C.E.S** of the video and if ..... xxxxxx
+* Log files in `logs/`.
 
 ## [1.0.2] - 2018-02-06
 
