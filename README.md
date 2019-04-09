@@ -98,21 +98,32 @@ Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at lea
 ./retropie-convert-videos.sh --convert-all
 ```
 
-### `--convert-system`
+### `--convert-system [OPTIONS]`
 
 Select a system (or more) to convert videos.
 
-Displays a checklist from which one or more systems can be selected.
+If no options are passed, it displays a checklist from which one or more systems can be selected.
 
 Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at least the `to_color` key has a value.
 
-#### Example
+#### Options
+
+* `systems` - All the system available in RetroPie's ROMS directory (e.g. `nes`, `snes`, `megadrive`, etc.). **Systems must be quoted**. See the example below.
+
+#### Example (without options)
 
 ```
 ./retropie-convert-videos.sh --convert-system
 ```
 
 ![RetroPie Convert Videos checklist example](examples/retropie-convert-videos-checklist.jpg)
+
+#### Example (with options)
+
+```
+./retropie-convert-videos.sh --convert-system "nes snes"
+
+```
 
 ## Config file
 
