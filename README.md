@@ -11,9 +11,9 @@ At this moment this script only works with videos downloaded using:
 * [Steven Selph's Scraper](https://github.com/retropie/retropie-setup/wiki/scraper#steven-selphs-scraper).
 * [Lars Muldjord's Skyscraper](https://github.com/retropie/retropie-setup/wiki/scraper#lars-muldjords-skyscraper).
 
-**Use rom folder for gamelist & images** option in Steven Selph's Scraper must be set to **Enabled**.
+Use the **ROM folder for gamelists & images** option in Steven Selph's Scraper.
 
-**Use rom folder for gamelist & media** option in Lars Muldjord's Skyscraper must be set to **Enabled**.
+Use the **ROM folder for gamelists & media** option in Lars Muldjord's Skyscraper.
 
 ## Installation
 
