@@ -214,7 +214,7 @@ function convert_videos() {
         if [[ ! -L "$rom_dir" ]]; then # Filter out symlinks.
             if [[ -d "$rom_dir/$VIDEOS_DIR" ]]; then
                 results+=("$(underline "$(basename "$rom_dir")")")
-                for video in "$rom_dir/$VIDEOS_DIR"/*-video.mp4; do
+                for video in "$rom_dir/$VIDEOS_DIR"/*.mp4; do
                     if [[ -n "$3" ]]; then
                         from_color="$2"
                         to_color="$3"
@@ -398,8 +398,6 @@ function get_options() {
                     log "Selected systems: '${selected_systems[@]}'."
                     selected_systems="${selected_systems[@]}"
                 fi
-
-                exit
 
                 from_color="$(get_config "from_color")"
                 to_color="$(get_config "to_color")"
