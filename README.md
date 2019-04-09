@@ -39,7 +39,7 @@ Use '--help' to see all the options.
 * `--from-color [OPTIONS]`: Set Color Encoding System (C.E.S) to convert from. **(optional)**
 * `--to-color [OPTIONS]`: Set Color Encoding System (C.E.S) to convert to. **(mandatory)**
 * `--convert-all`: Convert videos for all systems.
-* `--convert-system`: Select a system (or more) to convert videos.
+* `--convert-system [OPTIONS]`: Select a system (or more) to convert videos.
 
 ## Examples
 
@@ -60,6 +60,8 @@ Set Color Encoding System (C.E.S) to convert from.
 Target only videos with this particular C.E.S.
 If left blank, it will target all videos, regardless of the C.E.S.
 
+In most cases, you'd want to set it to `yuv444p` as this is the C.E.S that gives erros when using the OMX player.
+
 #### Options
 
 * `C.E.S` - Color Encoding System (C.E.S) to convert from.
@@ -75,6 +77,8 @@ If left blank, it will target all videos, regardless of the C.E.S.
 Set Color Encoding System (C.E.S) to convert to.
 
 Convert videos to this particular C.E.S.
+
+In most cases, you'd want to set it to `yuv420p` as this is the C.E.S that seems to work well with the OMX player.
 
 #### Options
 
@@ -108,7 +112,7 @@ Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at lea
 
 #### Options
 
-* `systems` - All the system available in RetroPie's ROMS directory (e.g. `nes`, `snes`, `megadrive`, etc.). **Systems must be quoted**. See the example below.
+* `systems` - Any of the system available in RetroPie's ROMS directory (e.g. `nes`, `snes`, `megadrive`, etc.). **Systems must be quoted**. See the example below.
 
 #### Example (without options)
 
@@ -122,7 +126,6 @@ Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at lea
 
 ```
 ./retropie-convert-videos.sh --convert-system "nes snes"
-
 ```
 
 ## Config file
