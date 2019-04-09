@@ -6,9 +6,13 @@ A tool for RetroPie to convert videos.
 
 ## Prerequisites
 
-At this moment this script only works with videos downloaded using [Steven Selph's Scraper](https://github.com/retropie/retropie-setup/wiki/scraper#steven-selphs-scraper).
+At this moment this script only works with videos downloaded using:
+
+* [Steven Selph's Scraper](https://github.com/retropie/retropie-setup/wiki/scraper#steven-selphs-scraper).
+* [Lars Muldjord's Skyscraper](https://github.com/retropie/retropie-setup/wiki/scraper#lars-muldjords-skyscraper).
 
 **Use rom folder for gamelist & images** option in Steven Selph's Scraper must be set to **Enabled**.
+**Use rom folder for gamelist & media** option in Lars Muldjord's Skyscraper must be set to **Enabled**.
 
 ## Installation
 
@@ -30,16 +34,19 @@ If no options are passed, you will be prompted with a usage example:
 ```
 USAGE: ./retropie-convert-videos.sh [OPTIONS]
 
-Use '--help' to see all the options.
+Use './retropie-convert-videos.sh --help' to see all the options.
 ```
+
+Before trying to convert any videos, `--to-color` and `--scraper` must be set.
 
 ## Options
 
 * `--help`: Print the help message and exit.
 * `--from-color [OPTIONS]`: Set Color Encoding System (C.E.S) to convert from. **(optional)**
 * `--to-color [OPTIONS]`: Set Color Encoding System (C.E.S) to convert to. **(mandatory)**
-* `--convert-all`: Convert videos for all systems.
-* `--convert-system [OPTIONS]`: Select a system (or more) to convert videos.
+* `--scraper [OPTIONS]`: Set the scraper. **(mandatory)**
+* `--convert-all`: Convert videos for all systems. **Warning! It can take a lot of time.**
+* `--convert-systems [OPTIONS]`: Select systems to convert videos.
 
 ## Examples
 
@@ -69,7 +76,7 @@ In most cases, you'd want to set it to `yuv444p` as this is the C.E.S that gives
 #### Example
 
 ```
-./retropie-convert-videos.sh --from-color yuv444p
+./retropie-convert-videos.sh --from-color "yuv444p"
 ```
 
 ### `--to-color [OPTIONS]` (mandatory)
@@ -87,7 +94,22 @@ In most cases, you'd want to set it to `yuv420p` as this is the C.E.S that seems
 #### Example
 
 ```
-./retropie-convert-videos.sh --to-color yuv420p
+./retropie-convert-videos.sh --to-color "yuv420p"
+```
+
+### `--scraper`
+
+Set the scraper.
+
+#### Options
+
+* `sselph`: Steven Selph's Scraper.
+* `skyscraper`: Lars Muldjord's Skyscraper.
+
+#### Example
+
+```
+./retropie-convert-videos.sh --scraper "sselph"
 ```
 
 ### `--convert-all`
@@ -102,9 +124,9 @@ Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at lea
 ./retropie-convert-videos.sh --convert-all
 ```
 
-### `--convert-system [OPTIONS]`
+### `--convert-systems [OPTIONS]`
 
-Select a system (or more) to convert videos.
+Select systems to convert videos.
 
 If no options are passed, it displays a checklist from which one or more systems can be selected.
 
@@ -117,7 +139,7 @@ Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at lea
 #### Example (without options)
 
 ```
-./retropie-convert-videos.sh --convert-system
+./retropie-convert-videos.sh --convert-systems
 ```
 
 ![RetroPie Convert Videos checklist example](examples/retropie-convert-videos-checklist.jpg)
@@ -125,7 +147,7 @@ Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at lea
 #### Example (with options)
 
 ```
-./retropie-convert-videos.sh --convert-system "nes snes"
+./retropie-convert-videos.sh --convert-systems "nes snes"
 ```
 
 ## Config file
