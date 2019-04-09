@@ -12,6 +12,9 @@
 # - Retropie 4.x.x
 # - libav-tools package
 
+
+# Globals ########################################
+
 home="$(find /home -type d -name RetroPie -print -quit 2>/dev/null)"
 home="${home%/RetroPie}"
 
@@ -24,7 +27,21 @@ readonly ROMS_DIR="$home/RetroPie/roms"
 readonly VIDEOS_DIR="images"
 readonly CONVERTED_VIDEOS_DIR="converted"
 
+readonly LOG_DIR="$SCRIPT_DIR/logs"
+readonly LOG_FILE="$LOG_DIR/$(date +%F-%T).log"
+
+
+# Flags #########################################
+
 CONFIG_FLAG=0
+
+
+# External resources ############################
+
+source "$SCRIPT_DIR/utils/base.sh"
+
+
+# Functions ######################################
 
 function is_retropie() {
     [[ -d "$home/RetroPie" && -d "$home/.emulationstation" && -d "/opt/retropie" ]]
@@ -89,10 +106,10 @@ function check_config() {
     to_color="$(get_config "to_color")"
 
     if [[ -z "$to_color" ]]; then
-        echo >&2
-        echo "'to_color' value (mandatory) not found in '$SCRIPT_CFG'" >&2
-        echo >&2
-        echo "Try '$0 --help' for more info." >&2
+        log >&2
+        log "'to_color' value (mandatory) not found in '$SCRIPT_CFG'" >&2
+        log >&2
+        log "Try '$0 --help' for more info." >&2
         exit 1
     fi
 
@@ -116,15 +133,15 @@ function validate_CES() {
     if avconv -loglevel quiet -pix_fmts | grep -q -w "$1"; then
         return 0
     else
-        echo >&2
-        echo "ERROR: invalid color encoding system '$1'." >&2
-        echo >&2
+        log >&2
+        log "ERROR: invalid color encoding system '$1'." >&2
+        log >&2
         if [[ "$CONFIG_FLAG" -eq 1 ]]; then
-            echo "Check '$SCRIPT_CFG'" >&2
-            echo >&2
+            log "Check '$SCRIPT_CFG'" >&2
+            log >&2
         fi
-        echo "TIP: run the 'avconv -pix_fmts' command to get a full list of Color Encoding Systems (C.E.S)." >&2
-        echo >&2
+        log "TIP: run the 'avconv -pix_fmts' command to get a full list of Color Encoding Systems (C.E.S)." >&2
+        log >&2
         exit 1
     fi
 }
@@ -141,14 +158,15 @@ function convert_video() {
     avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")"
     result_value="$?"
     if [[ "$result_value" -eq 0 ]]; then
-        results+=("> \"$(basename "$video")\" --> \e[32mSuccessfully converted!\e[0m")
-        ((successfull++))
+        results+=("> \"$(basename "$video")\" --> SUCCESSFUL!")
+        ((successful++))
     else
-        results+=("> \"$(basename "$video")\" --> \e[0mFAILED!\e[0m")
-        ((unsuccessfull++))
+        results+=("> \"$(basename "$video")\" --> FAILED!")
+        ((unsuccessful++))
         mv "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")" "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")-failed"
     fi
 }
+
 
 function check_CES() {
     if [[ -z "$1" ]]; then
@@ -161,7 +179,6 @@ function check_CES() {
 }
 
 
-
 function convert_videos() {
     local systems=()
     local roms_dir=()
@@ -169,8 +186,8 @@ function convert_videos() {
     local from_color
     local to_color
     local results=()
-    local successfull=0
-    local unsuccessfull=0
+    local successful=0
+    local unsuccessful=0
     local converted_videos_dir
 
     systems="$1"
@@ -181,15 +198,17 @@ function convert_videos() {
     done
 
     if [[ "${#roms_dir[@]}" -eq 0 ]]; then
-        echo "No systems selected" >&2
+        log "No systems selected" >&2
+        log "Aborting ..." >&2
         exit 1
     fi
 
     [[ -n "$2" ]] && validate_CES "$2"
     [[ -n "$3" ]] && validate_CES "$3"
 
-    echo "Starting video conversion ..."
-    echo ""
+    log
+    log "Starting video conversion ..."
+    log
 
     for rom_dir in "${roms_dir[@]}"; do
         if [[ ! -L "$rom_dir" ]]; then # Filter out symlinks.
@@ -204,7 +223,7 @@ function convert_videos() {
                             convert_video "$video"
                         else
                             results+=("> $(basename "$video") --> Doesn't use '$from_color' Color Encoding System (C.E.S).")
-                            ((unsuccessfull++))
+                            ((unsuccessful++))
                         fi
                     else
                         to_color="$2"
@@ -216,23 +235,23 @@ function convert_videos() {
             fi
         fi
     done
-    echo
+    log
     for result in "${results[@]}"; do
-        echo -e "$result"
+        log "$result"
     done
-    echo
-    if [[ "$successfull" -gt 0 ]]; then
-        if [[ "$successfull" -gt 1 ]]; then
-            echo "$successfull videos were successfull."
+    log
+    if [[ "$successful" -gt 0 ]]; then
+        if [[ "$successful" -gt 1 ]]; then
+            log "$successful videos were successful."
         else
-            echo "$successfull video was successfull."
+            log "$successful video was successful."
         fi
     fi
-    if [[ "$unsuccessfull" -gt 0 ]]; then
-        if [[ "$unsuccessfull" -gt 1 ]]; then
-            echo  "$unsuccessfull videos were unsuccessfull."
+    if [[ "$unsuccessful" -gt 0 ]]; then
+        if [[ "$unsuccessful" -gt 1 ]]; then
+            log "$unsuccessful videos were unsuccessful."
         else
-            echo  "$unsuccessfull video was unsuccessfull."
+            log "$unsuccessful video was unsuccessful."
         fi
     fi
 }
@@ -314,7 +333,11 @@ function get_options() {
                 check_config
 
                 if [[ -n "$2" ]]; then
+                    log "$(underline "CLI mode")"
+                    log
+
                     local input_systems=("$2")
+                    log "Inputted systems: '${input_systems[@]}'."
                     IFS=" " read -r -a input_systems <<< "${input_systems[@]}"
 
                     systems="$(get_all_systems)"
@@ -335,17 +358,20 @@ function get_options() {
                     done
 
                     if [[ "${#selected_systems[@]}" -eq 0 ]]; then
-                        echo "ERROR: No videos found for any of the inputted ('${input_systems[@]}') systems!" >&2
-                        echo "Aborting ..."
+                        log "ERROR: No videos found for any of the inputted ('${input_systems[@]}') systems!" >&2
+                        log "Aborting ..."
                         exit 1
                     else
+                        log "Systems found: '${selected_systems[@]}'."
+                        selected_systems="${selected_systems[@]}"
                         if [[ "${#no_found_systems[@]}" -gt 0 ]]; then
-                            echo "No videos found for the following systems: '"${no_found_systems[@]}"'." >&2
+                            log
+                            log "No videos found for the following systems: '"${no_found_systems[@]}"'." >&2
                         fi
-                        echo "Systems found: '${selected_systems[@]}'."
                     fi
-                    exit
                 else
+                    log "$(underline "GUI mode")"
+                    log
                     cmd=(dialog \
                         --backtitle "$SCRIPT_TITLE" \
                         --checklist "Select ROM folders" 15 50 15)
@@ -360,7 +386,8 @@ function get_options() {
                     choices="$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)"
 
                     if [[ -z "${choices[@]}" ]]; then
-                        echo "No systems selected." >&2
+                        log "No systems selected." >&2
+                        log "Aborting ..."
                         exit 1
                     fi
 
@@ -368,8 +395,11 @@ function get_options() {
                     for choice in "${choices[@]}"; do
                         selected_systems+=("${options[choice*3-2]}")
                     done
+                    log "Selected systems: '${selected_systems[@]}'."
                     selected_systems="${selected_systems[@]}"
                 fi
+
+                exit
 
                 from_color="$(get_config "from_color")"
                 to_color="$(get_config "to_color")"
@@ -392,6 +422,10 @@ function main() {
     fi
 
     check_dependencies
+
+    mkdir -p "$LOG_DIR"
+
+    find "$LOG_DIR" -type f | sort | head -n -9 | xargs -d '\n' --no-run-if-empty rm
 
     get_options "$@"
 }
