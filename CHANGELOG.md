@@ -4,20 +4,20 @@
 
 **NOTE:** This release contains breaking changes!
 
+### Deprecated
+
+* ~~`--convert-system`~~ now is `--convert-systems`.
+
 ### Added
 
-* Support for Skyscraper.
-* `--convert-system` now accepts systems as (optional) arguments (e.g. `--convert-system "nes snes"`).
+* Support for [Lars Muldjord's Skyscraper](https://github.com/retropie/retropie-setup/wiki/scraper#lars-muldjords-skyscraper).
+* `--convert-systems` now accepts systems as (optional) arguments (e.g. `--convert-systems "nes snes"`).
 * The script detects the **C.E.S** of the video and if ..... xxxxxx
-* Log files in `logs/`.
+* New log system. Log files are stored in `logs/`.
 
 ### Changed
 
 * Search for all `.mp4` video files instead of just `-video.mp4` so the script can work with many scrapers.
-
-### Deprecated
-
-* ~~`--convert-system`~~ now is `--convert-systems`.
 
 ## [1.0.2] - 2018-02-06
 
