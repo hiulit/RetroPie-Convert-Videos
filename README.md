@@ -98,7 +98,7 @@ In most cases, you'd want to set it to `yuv420p` as this is the C.E.S that seems
 ./retropie-convert-videos.sh --to-color "yuv420p"
 ```
 
-### `--scraper`
+### `--scraper` (mandatory)
 
 Set the scraper.
 
@@ -114,6 +114,8 @@ Set the scraper.
 ```
 
 ### `--convert-all`
+
+**Warning! It can take a lot of time.**
 
 Convert videos for all systems.
 
@@ -172,6 +174,14 @@ from_color = ""
 # (e.g. "yuv420p")
 
 to_color = ""
+
+# Scraper
+# The scraper to be used.
+# Available scrapers:
+# - "sselph" (Steven Selph's Scraper).
+# - "skyscraper" (Lars Muldjord's Skyscraper).
+
+scraper = ""
 ```
 
 You can edit this file directly instead of using `--from-color` or `--to-color`.
