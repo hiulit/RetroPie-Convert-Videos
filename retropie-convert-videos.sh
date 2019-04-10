@@ -49,44 +49,6 @@ source "$SCRIPT_DIR/utils/base.sh"
 
 # Functions #####################################
 
-function is_retropie() {
-    [[ -d "$home/RetroPie" && -d "$home/.emulationstation" && -d "/opt/retropie" ]]
-}
-
-
-function check_dependencies() {
-    if ! which avconv > /dev/null; then
-        echo "ERROR: The libav-tools package is not installed!" >&2
-        echo "Please, install it with 'sudo apt-get install libav-tools'." >&2
-        exit 1
-    fi
-}
-
-
-function underline() {
-    local dashes
-    local string="$1"
-    if [[ -z "$string" ]]; then
-        log "Missing a string as an argument."
-        exit 1
-    fi
-    echo "$string"
-    for ((i=1; i<="${#string}"; i+=1)); do [[ -n "$dashes" ]] && dashes+="-" || dashes="-"; done && echo "$dashes"
-}
-
-
-function check_argument() {
-    # XXX: this method doesn't accept arguments starting with '-'.
-    if [[ -z "$2" || "$2" =~ ^- ]]; then
-        echo "ERROR: '$1' is missing an argument." >&2
-        echo >&2
-        echo "Try '$0 --help' for more info." >&2
-        log "Or read the documentation in the README." >&2
-        return 1
-    fi
-}
-
-
 function set_config() {
     sed -i "s|^\($1\s*=\s*\).*|\1\"$2\"|" "$SCRIPT_CFG"
     echo "\"$1\" set to \"$2\"."
@@ -134,15 +96,6 @@ function check_config() {
     validate_scraper "$scraper"
     validate_CES "$from_ces"
     validate_CES "$to_ces"
-}
-
-
-function usage() {
-    echo
-    echo "USAGE: $0 [options]"
-    echo
-    echo "Use '$0 --help' to see all the options."
-    echo
 }
 
 
