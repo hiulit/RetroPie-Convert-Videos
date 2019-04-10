@@ -63,7 +63,7 @@ Print the help message and exit.
 
 ### `--from-color [OPTIONS]` (optional)
 
-Set Color Encoding System (C.E.S) to convert from.
+Set Color Encoding System (C.E.S) to convert from in the [config file](/retropie-convert-videos-settings.cfg).
 
 Target only videos with this particular C.E.S.
 If left blank, it will target all videos, regardless of the C.E.S.
@@ -82,7 +82,7 @@ In most cases, you'd want to set it to `yuv444p` as this is the C.E.S that gives
 
 ### `--to-color [OPTIONS]` (mandatory)
 
-Set Color Encoding System (C.E.S) to convert to.
+Set Color Encoding System (C.E.S) to convert to in the [config file](/retropie-convert-videos-settings.cfg).
 
 Convert videos to this particular C.E.S.
 
