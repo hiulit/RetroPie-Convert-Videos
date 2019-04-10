@@ -467,7 +467,7 @@ function get_options() {
                 convert_videos "$selected_systems" "$from_color" "$to_color"
                 ;;
             *)
-                echo "ERROR: invalid option '$1'" >&2
+                echo "ERROR: Invalid option '$1'." >&2
                 exit 2
                 ;;
         esac
