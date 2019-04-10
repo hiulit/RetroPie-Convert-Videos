@@ -103,15 +103,15 @@ function get_config() {
 
 function check_config() {
     CONFIG_FLAG=1
-    local from_color
-    local to_color
+    local from_ces
+    local to_ces
     local scraper
-    from_color="$(get_config "from_color")"
-    to_color="$(get_config "to_color")"
+    from_ces="$(get_config "from_ces")"
+    to_ces="$(get_config "to_ces")"
     scraper="$(get_config "scraper")"
 
-    if [[ -z "$to_color" ]]; then
-        log "'to_color' value (mandatory) not found in '$SCRIPT_CFG'" >&2
+    if [[ -z "$to_ces" ]]; then
+        log "'to_ces' value (mandatory) not found in '$SCRIPT_CFG'" >&2
         log >&2
         log "Try '$0 --help' for more info." >&2
         exit 1
@@ -125,8 +125,8 @@ function check_config() {
     fi
 
     validate_scraper "$scraper"
-    validate_CES "$from_color"
-    validate_CES "$to_color"
+    validate_CES "$from_ces"
+    validate_CES "$to_ces"
 }
 
 
@@ -193,7 +193,7 @@ function convert_video() {
 
     mkdir -p "$rom_dir/$VIDEOS_DIR/$converted_videos_dir"
 
-    avconv -i "$video" -y -pix_fmt "$to_color" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")"
+    avconv -i "$video" -y -pix_fmt "$to_ces" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")"
     result_value="$?"
     if [[ "$result_value" -eq 0 ]]; then
         results+=("> \"$(basename "$video")\" --> SUCCESSFUL!")
@@ -225,8 +225,8 @@ function convert_videos() {
     local systems=()
     local roms_dir=()
     local rom_dir
-    local from_color
-    local to_color
+    local from_ces
+    local to_ces
     local results=()
     local successful=0
     local unsuccessful=0
@@ -258,18 +258,18 @@ function convert_videos() {
                 results+=("$(underline "$(basename "$rom_dir")")")
                 for video in "$rom_dir/$VIDEOS_DIR"/*.mp4; do
                     if [[ -n "$3" ]]; then
-                        from_color="$2"
-                        to_color="$3"
-                        converted_videos_dir="$CONVERTED_VIDEOS_DIR-$to_color"
-                        if avprobe "$video" 2>&1 | grep -q "$from_color"; then
+                        from_ces="$2"
+                        to_ces="$3"
+                        converted_videos_dir="$CONVERTED_VIDEOS_DIR-$to_ces"
+                        if avprobe "$video" 2>&1 | grep -q "$from_ces"; then
                             convert_video "$video"
                         else
-                            results+=("> $(basename "$video") --> Doesn't use '$from_color' Color Encoding System (C.E.S).")
+                            results+=("> $(basename "$video") --> Doesn't use '$from_ces' Color Encoding System (C.E.S).")
                             ((unsuccessful++))
                         fi
                     else
-                        to_color="$2"
-                        converted_videos_dir="$CONVERTED_VIDEOS_DIR-$to_color"
+                        to_ces="$2"
+                        converted_videos_dir="$CONVERTED_VIDEOS_DIR-$to_ces"
                         convert_video "$video"
                     fi
                 done
@@ -335,19 +335,19 @@ function get_options() {
                 echo
                 exit 0
                 ;;
-#H -f, --from-color [C.E.S]         Set Color Encoding System (C.E.S) to convert from.
-            -f|--from-color)
+#H -f, --from-ces [C.E.S]         Set Color Encoding System (C.E.S) to convert from.
+            -f|--from-ces)
                 check_argument "$1" "$2" || exit 1
                 shift
                 validate_CES "$1"
-                set_config "from_color" "$1"
+                set_config "from_ces" "$1"
                 ;;
-#H -t, --to-color [C.E.S]           Set Color Encoding System (C.E.S) to convert to.
-            -t|--to-color)
+#H -t, --to-ces [C.E.S]           Set Color Encoding System (C.E.S) to convert to.
+            -t|--to-ces)
                 check_argument "$1" "$2" || exit 1
                 shift
                 validate_CES "$1"
-                set_config "to_color" "$1"
+                set_config "to_ces" "$1"
                 ;;
 #H -r, --scraper                    Set the scraper.
             -r|--scraper)
@@ -358,11 +358,11 @@ function get_options() {
 #H -a, --convert-all                Convert videos for all systems.
             -a|--convert-all)
                 check_config
-                local from_color
-                local to_color
-                from_color="$(get_config "from_color")"
-                to_color="$(get_config "to_color")"
-                convert_videos "$(get_all_systems)" "$from_color" "$to_color"
+                local from_ces
+                local to_ces
+                from_ces="$(get_config "from_ces")"
+                to_ces="$(get_config "to_ces")"
+                convert_videos "$(get_all_systems)" "$from_ces" "$to_ces"
                 ;;
 #H -s, --convert-systems [SYSTEMS]  Select systems to convert videos.
             -s|--convert-systems)
@@ -375,8 +375,8 @@ function get_options() {
                 local choice
                 local selected_systems=()
                 local no_found_systems=()
-                local from_color
-                local to_color
+                local from_ces
+                local to_ces
 
                 check_config
 
@@ -462,9 +462,9 @@ function get_options() {
                     selected_systems="${selected_systems[@]}"
                 fi
 
-                from_color="$(get_config "from_color")"
-                to_color="$(get_config "to_color")"
-                convert_videos "$selected_systems" "$from_color" "$to_color"
+                from_ces="$(get_config "from_ces")"
+                to_ces="$(get_config "to_ces")"
+                convert_videos "$selected_systems" "$from_ces" "$to_ces"
                 ;;
             *)
                 echo "ERROR: Invalid option '$1'." >&2

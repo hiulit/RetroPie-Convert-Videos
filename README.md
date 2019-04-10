@@ -38,13 +38,13 @@ USAGE: ./retropie-convert-videos.sh [OPTIONS]
 Use './retropie-convert-videos.sh --help' to see all the options.
 ```
 
-Before trying to convert any videos, `--to-color` and `--scraper` must be set.
+Before trying to convert any videos, `--to-ces` and `--scraper` must be set.
 
 ## Options
 
 * `--help`: Print the help message and exit.
-* `--from-color [OPTIONS]`: Set Color Encoding System (C.E.S) to convert from. **(optional)**
-* `--to-color [OPTIONS]`: Set Color Encoding System (C.E.S) to convert to. **(mandatory)**
+* `--from-ces [OPTIONS]`: Set Color Encoding System (C.E.S) to convert from. **(optional)**
+* `--to-ces [OPTIONS]`: Set Color Encoding System (C.E.S) to convert to. **(mandatory)**
 * `--scraper [OPTIONS]`: Set the scraper. **(mandatory)**
 * `--convert-all`: Convert videos for all systems. **Warning! It can take a lot of time.**
 * `--convert-systems [OPTIONS]`: Select systems to convert videos.
@@ -61,7 +61,7 @@ Print the help message and exit.
 ./retropie-convert-videos.sh --help
 ```
 
-### `--from-color [OPTIONS]` (optional)
+### `--from-ces [OPTIONS]` (optional)
 
 Set Color Encoding System (C.E.S) to convert from in the [config file](/retropie-convert-videos-settings.cfg).
 
@@ -77,10 +77,10 @@ In most cases, you'd want to set it to `yuv444p` as this is the C.E.S that gives
 #### Example
 
 ```
-./retropie-convert-videos.sh --from-color "yuv444p"
+./retropie-convert-videos.sh --from-ces "yuv444p"
 ```
 
-### `--to-color [OPTIONS]` (mandatory)
+### `--to-ces [OPTIONS]` (mandatory)
 
 Set Color Encoding System (C.E.S) to convert to in the [config file](/retropie-convert-videos-settings.cfg).
 
@@ -95,7 +95,7 @@ In most cases, you'd want to set it to `yuv420p` as this is the C.E.S that seems
 #### Example
 
 ```
-./retropie-convert-videos.sh --to-color "yuv420p"
+./retropie-convert-videos.sh --to-ces "yuv420p"
 ```
 
 ### `--scraper` (mandatory)
@@ -119,7 +119,7 @@ Set the scraper in the [config file](/retropie-convert-videos-settings.cfg).
 
 Convert videos for all systems.
 
-Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at least the `to_color` key has a value.
+Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at least the `to_ces` key has a value.
 
 #### Example
 
@@ -133,7 +133,7 @@ Select systems to convert videos.
 
 If no options are passed, it displays a checklist from which one or more systems can be selected.
 
-Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at least the `to_color` key has a value.
+Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at least the `to_ces` key has a value.
 
 #### Options
 
@@ -155,7 +155,7 @@ Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at lea
 
 ## Config file
 
-When setting the C.E.S using `--from-color` or `--to-color`, the generated values are stored in `retropie-convert-videos-settings.cfg`.
+When setting the C.E.S using `--from-ces` or `--to-ces`, the generated values are stored in `retropie-convert-videos-settings.cfg`.
 
 ```
 # Settings for RetroPie Convert Videos.
@@ -167,13 +167,13 @@ When setting the C.E.S using `--from-color` or `--to-color`, the generated value
 # If left blank, it will target all videos, regardless of the C.E.S.
 # (e.g. "yuv444p")
 
-from_color = ""
+from_ces = ""
 
 # To color (mandatory)
 # Convert videos to this particular C.E.S.
 # (e.g. "yuv420p")
 
-to_color = ""
+to_ces = ""
 
 # Scraper
 # The scraper to be used.
@@ -184,7 +184,7 @@ to_color = ""
 scraper = ""
 ```
 
-You can edit this file directly instead of using `--from-color`, `--to-color` or `--scraper`.
+You can edit this file directly instead of using `--from-ces`, `--to-ces` or `--scraper`.
 
 ## Changelog
 

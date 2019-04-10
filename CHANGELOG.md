@@ -7,6 +7,8 @@
 ### Deprecated
 
 * ~~`--convert-system`~~ now is `--convert-systems`.
+* ~~`--from-color`~~ now is `--from-ces`.
+* ~~`--to-color`~~ now is `--to-ces`.
 
 ### Added
 
