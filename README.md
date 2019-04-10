@@ -204,6 +204,7 @@ Thanks to:
 
 * [Clyde](https://retropie.org.uk/forum/user/clyde) - For [posting the code in the RetroPie forum](https://retropie.org.uk/forum/topic/15362/here-s-a-script-to-batch-convert-yuv-4-4-4-videos-to-yuv-4-2-0-in-retropie-linux) that inspired this script.
 * [Dan Edwards](https://github.com/edwardsd97) - For helping with [#3](https://github.com/hiulit/RetroPie-Convert-Videos/pull/3).
+* [furnace](https://retropie.org.uk/forum/user/furnace) and [mitu](https://retropie.org.uk/forum/user/mitu) - For pointing out some issues on how to better support [Lars Muldjord's Skyscraper](https://github.com/retropie/retropie-setup/wiki/scraper#lars-muldjords-skyscraper).
 
 ## License
 
