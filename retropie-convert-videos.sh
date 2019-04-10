@@ -428,7 +428,7 @@ function get_options() {
                     if [[ "${systems[@]}" -eq 0 ]]; then
                         local scraper
                         scraper="$(get_config "scraper")"
-                        log "ERROR: There are no systems with videos!" >&2
+                        log "ERROR: No videos found in any systems!" >&2
                         log >&2
                         log "You are using '$scraper' scraper." >&2
                         if [[ "$scraper" == "sselph" ]]; then
