@@ -100,7 +100,7 @@ In most cases, you'd want to set it to `yuv420p` as this is the C.E.S that seems
 
 ### `--scraper` (mandatory)
 
-Set the scraper.
+Set the scraper in the [config file](/retropie-convert-videos-settings.cfg).
 
 #### Options
 
