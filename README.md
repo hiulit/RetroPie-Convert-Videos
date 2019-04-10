@@ -184,7 +184,7 @@ to_color = ""
 scraper = ""
 ```
 
-You can edit this file directly instead of using `--from-color` or `--to-color`.
+You can edit this file directly instead of using `--from-color`, `--to-color` or `--scraper`.
 
 ## Changelog
 
