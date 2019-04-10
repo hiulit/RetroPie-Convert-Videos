@@ -81,6 +81,7 @@ function check_argument() {
         echo "ERROR: '$1' is missing an argument." >&2
         echo >&2
         echo "Try '$0 --help' for more info." >&2
+        log "Or read the documentation in the README." >&2
         return 1
     fi
 }
@@ -111,16 +112,22 @@ function check_config() {
     scraper="$(get_config "scraper")"
 
     if [[ -z "$to_ces" ]]; then
+        echo
         log "'to_ces' value (mandatory) not found in '$SCRIPT_CFG'" >&2
         log >&2
         log "Try '$0 --help' for more info." >&2
+        log "Or read the documentation in the README." >&2
+        echo
         exit 1
     fi
 
     if [[ -z "$scraper" ]]; then
+        echo
         log "'scraper' value (mandatory) not found in '$SCRIPT_CFG'" >&2
         log >&2
         log "Try '$0 --help' for more info." >&2
+        log "Or read the documentation in the README." >&2
+        echo
         exit 1
     fi
 
@@ -164,12 +171,14 @@ function validate_scraper() {
     scraper="$1"
 
     if ! printf '%s\n' "${SCRAPERS[@]}" | grep -w "$scraper" &>/dev/null; then
+        echo
         log "The '$scraper' scraper is not supported." >&2
         log >&2
         log "Try one of the supported scrapers:" >&2
         for item in ${SCRAPERS[@]}; do
             log "- $item" >&2
         done
+        echo
         exit 1
     fi
 
