@@ -155,15 +155,12 @@ function convert_video() {
 
     mkdir -p "$rom_dir/$VIDEOS_DIR/$converted_videos_dir"
 
+    echo "Converting \"$(basename "$video")\" ..."
     avconv -i "$video" -y -pix_fmt "$to_ces" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")"
-    result_value="$?"
-    if [[ "$result_value" -eq 0 ]]; then
-        results+=("> \"$(basename "$video")\" --> SUCCESSFUL!")
-        ((successful++))
-    else
-        results+=("> \"$(basename "$video")\" --> FAILED!")
-        ((unsuccessful++))
-        mv "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")" "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")-failed"
+    local return_value="$?"
+    log "RETURN VALUE IN VIDEO FUNC: $return_value"
+    if [[ "$return_value" -eq 255 ]]; then # If cancelled by user
+       return 1
     fi
 }
 
@@ -171,15 +168,18 @@ function convert_video() {
 function check_CES() {
     local video
     video="$1"
-
     if [[ -z "$video" ]]; then
-        log "ERROR: No video input file detected." >&2
+        log "ERROR: Can't check for C.E.S. No video input file detected." >&2
         exit 1
     fi
 
-    local CES
-    CES="$(avprobe -show_streams "$video" | grep -Po "(?<=^pix_fmt=).*")"
-    echo "$CES"
+    [[ -z "$from_ces" ]] && return 0 # Ignore the checking if "$from_ces" is not set
+
+    local ces
+    ces="$(avprobe -show_streams "$video" 2>&1 | grep -Po "(?<=^pix_fmt=).*")"
+    echo "ces: $ces"
+    echo "from_ces: $from_ces"
+    [[ "$ces" == "$from_ces" ]] && return 1
 }
 
 
@@ -192,6 +192,7 @@ function convert_videos() {
     local results=()
     local successful=0
     local unsuccessful=0
+    local failed=0
     local converted_videos_dir
 
     systems="$1"
@@ -224,9 +225,26 @@ function convert_videos() {
                         to_ces="$3"
                         converted_videos_dir="$CONVERTED_VIDEOS_DIR-$to_ces"
                         if avprobe "$video" 2>&1 | grep -q "$from_ces"; then
-                            convert_video "$video"
+                            check_CES "$video"
+                            local return_value="$?"
+                            if [[ "$return_value" -eq 0 ]]; then
+                                convert_video "$video"
+                                local return_value="$?"
+                                log "RETURN VALIE outside videofunc: $return_value"
+                                if [[ "$return_value" -eq 0 ]]; then
+                                    results+=("> \"$(basename "$video")\" --> SUCCESSFUL!")
+                                    ((successful++))
+                                else
+                                    results+=("> \"$(basename "$video")\" --> FAILED!")
+                                    ((failed++))
+                                    mv "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")" "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")-failed"
+                                fi
+                            else
+                                results+=("> \"$(basename "$video")\" --> Don't convert! Has the same Color Encoding System (C.E.S) as 'from_ces': '$from_ces'.")
+                                ((unsuccessful++))
+                            fi
                         else
-                            results+=("> $(basename "$video") --> Doesn't use '$from_ces' Color Encoding System (C.E.S).")
+                            results+=("> $(basename "$video") --> Can't convert! Doesn't use the Color Encoding System (C.E.S set in 'from_ces': '$from_ces'.")
                             ((unsuccessful++))
                         fi
                     else
@@ -257,6 +275,9 @@ function convert_videos() {
         else
             log "$unsuccessful video was unsuccessful."
         fi
+    fi
+    if [[ "$failed" -gt 0 ]]; then
+        log "$failed videos failed."
     fi
 }
 
