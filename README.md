@@ -59,6 +59,7 @@ Log files are stored in `logs/`.
 * `--scraper [OPTIONS]`: Set the scraper. **(mandatory)**
 * `--convert-all`: Convert videos for all systems. **Warning! It can take a lot of time.**
 * `--convert-systems [OPTIONS]`: Select systems to convert videos.
+* `--version`: Print the script version and exit. 
 
 ## Examples
 
@@ -163,6 +164,11 @@ Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at lea
 ```
 ./retropie-convert-videos.sh --convert-systems "nes snes"
 ```
+
+### `--version`
+
+Print the script version and exit.
+
 
 ## Config file
 
