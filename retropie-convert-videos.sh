@@ -45,6 +45,7 @@ CONFIG_FLAG=0
 # External resources ############################
 
 source "$SCRIPT_DIR/utils/base.sh"
+source "$SCRIPT_DIR/utils/progress-bar.sh"
 
 
 # Functions #####################################
@@ -155,13 +156,15 @@ function convert_video() {
 
     mkdir -p "$rom_dir/$VIDEOS_DIR/$converted_videos_dir"
 
-    echo "Converting \"$(basename "$video")\" ..."
-    avconv -i "$video" -y -pix_fmt "$to_ces" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")"
-    local return_value="$?"
-    log "RETURN VALUE IN VIDEO FUNC: $return_value"
-    if [[ "$return_value" -eq 255 ]]; then # If cancelled by user
-       return 1
+    log "Converting \"$(basename "$video")\" ... ($i/${#videos[@]})"
+    # avconv -i "$video" -y -pix_fmt "$to_ces" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")"
+    progress_bar
+    return_value="$?"
+    if [[ "$return_value" -eq 1 ]]; then
+        return 1
     fi
+    log "Done."
+    log
 }
 
 
@@ -219,7 +222,10 @@ function convert_videos() {
         if [[ ! -L "$rom_dir" ]]; then # Filter out symlinks.
             if [[ -d "$rom_dir/$VIDEOS_DIR" ]]; then
                 results+=("$(underline "$(basename "$rom_dir")")")
-                for video in "$rom_dir/$VIDEOS_DIR"/*.mp4; do
+                local videos
+                videos=("$rom_dir/$VIDEOS_DIR"/*.mp4)
+                local i=1
+                for video in "${videos[@]}"; do
                     if [[ -n "$3" ]]; then
                         from_ces="$2"
                         to_ces="$3"
@@ -229,15 +235,15 @@ function convert_videos() {
                             local return_value="$?"
                             if [[ "$return_value" -eq 0 ]]; then
                                 convert_video "$video"
-                                local return_value="$?"
-                                log "RETURN VALIE outside videofunc: $return_value"
                                 if [[ "$return_value" -eq 0 ]]; then
                                     results+=("> \"$(basename "$video")\" --> SUCCESSFUL!")
                                     ((successful++))
                                 else
                                     results+=("> \"$(basename "$video")\" --> FAILED!")
                                     ((failed++))
-                                    mv "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")" "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")-failed"
+                                    if [[ -f "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")" ]]; then
+                                        mv "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")" "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")-failed"
+                                    fi
                                 fi
                             else
                                 results+=("> \"$(basename "$video")\" --> Don't convert! Has the same Color Encoding System (C.E.S) as 'from_ces': '$from_ces'.")
@@ -252,6 +258,7 @@ function convert_videos() {
                         converted_videos_dir="$CONVERTED_VIDEOS_DIR-$to_ces"
                         convert_video "$video"
                     fi
+                    ((i++))
                 done
                 results+=("")
             fi
@@ -277,7 +284,11 @@ function convert_videos() {
         fi
     fi
     if [[ "$failed" -gt 0 ]]; then
-        log "$failed videos failed."
+        if [[ "$unsuccessful" -gt 1 ]]; then
+            log "$failed videos failed."
+        else
+            log "$failed video failed."
+        fi
     fi
 }
 
@@ -408,7 +419,10 @@ function get_options() {
                         --checklist "Select ROM folders" 15 50 15)
 
                     systems="$(get_all_systems)"
-                    if [[ "${systems[@]}" -eq 0 ]]; then
+                    echo "${#systems[@]}"
+                    IFS=" " read -r -a systems <<< "${systems[@]}"
+                    echo "${#systems[@]}"
+                    if [[ "${#systems[@]}" -eq 0 ]]; then
                         local scraper
                         scraper="$(get_config "scraper")"
                         log "ERROR: No videos found in any systems!" >&2
@@ -470,6 +484,8 @@ function main() {
     mkdir -p "$LOG_DIR"
 
     find "$LOG_DIR" -type f | sort | head -n -9 | xargs -d '\n' --no-run-if-empty rm
+
+    trap ctrl_c INT
 
     get_options "$@"
 }
