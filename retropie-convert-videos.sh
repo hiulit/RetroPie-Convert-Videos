@@ -358,6 +358,8 @@ function get_options() {
                 local to_ces
                 from_ces="$(get_config "from_ces")"
                 to_ces="$(get_config "to_ces")"
+                log "$(underline "Convert all systems ($(get_all_systems))")"
+                log
                 convert_videos "$(get_all_systems)" "$from_ces" "$to_ces"
                 ;;
 #H -s, --convert-systems [SYSTEMS]  Select systems to convert videos.
