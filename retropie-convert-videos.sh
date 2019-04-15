@@ -18,6 +18,7 @@
 home="$(find /home -type d -name RetroPie -print -quit 2>/dev/null)"
 home="${home%/RetroPie}"
 
+readonly SCRIPT_VERSION="2.0.0"
 readonly SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 readonly SCRIPT_TITLE="Convert videos for RetroPie."
 readonly SCRIPT_DESCRIPTION="A tool for RetroPie to convert videos."
@@ -156,6 +157,7 @@ function convert_video() {
 
     mkdir -p "$rom_dir/$VIDEOS_DIR/$converted_videos_dir"
 
+    log "$(underline "$(basename "$rom_dir")")"
     log "Converting \"$(basename "$video")\" ... ($i/${#videos[@]})"
     # avconv -i "$video" -y -pix_fmt "$to_ces" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")"
     progress_bar
@@ -329,14 +331,14 @@ function get_options() {
                 echo
                 exit 0
                 ;;
-#H -f, --from-ces [C.E.S]         Set Color Encoding System (C.E.S) to convert from.
+#H -f, --from-ces [C.E.S]           Set Color Encoding System (C.E.S) to convert from.
             -f|--from-ces)
                 check_argument "$1" "$2" || exit 1
                 shift
                 validate_CES "$1"
                 set_config "from_ces" "$1"
                 ;;
-#H -t, --to-ces [C.E.S]           Set Color Encoding System (C.E.S) to convert to.
+#H -t, --to-ces [C.E.S]             Set Color Encoding System (C.E.S) to convert to.
             -t|--to-ces)
                 check_argument "$1" "$2" || exit 1
                 shift
@@ -462,6 +464,11 @@ function get_options() {
                 from_ces="$(get_config "from_ces")"
                 to_ces="$(get_config "to_ces")"
                 convert_videos "$selected_systems" "$from_ces" "$to_ces"
+                ;;
+#H -v, --version                    Print the script version and exit.
+            -v|--version)
+                echo "$SCRIPT_VERSION"
+                exit 0
                 ;;
             *)
                 echo "ERROR: Invalid option '$1'." >&2
