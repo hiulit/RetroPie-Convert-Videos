@@ -14,8 +14,9 @@
 
 * Support for [Lars Muldjord's Skyscraper](https://github.com/retropie/retropie-setup/wiki/scraper#lars-muldjords-skyscraper).
 * `--convert-systems` now accepts systems as (optional) arguments (e.g. `--convert-systems "nes snes"`).
-* The script detects the **C.E.S** of the video and if ..... xxxxxx
+* The script noe detects the **C.E.S** of the video and if it is the same as the `from_ces` value, it won't convert the video.
 * New log system. Log files are stored in `logs/`.
+* Added a progress bar!
 
 ### Changed
 
