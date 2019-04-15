@@ -182,8 +182,6 @@ function check_CES() {
 
     local ces
     ces="$(avprobe -show_streams "$video" 2>&1 | grep -Po "(?<=^pix_fmt=).*")"
-    echo "ces: $ces"
-    echo "from_ces: $from_ces"
     [[ "$ces" == "$from_ces" ]] && return 1
 }
 
