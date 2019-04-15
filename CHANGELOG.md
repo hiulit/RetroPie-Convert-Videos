@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+* Up to date
+
+## [2.0.0] - 2019-04-15
+
 **NOTE:** This release contains breaking changes!
 
 ### Deprecated
