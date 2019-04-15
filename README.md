@@ -11,9 +11,9 @@ At this moment this script only works with videos downloaded using:
 * [Steven Selph's Scraper](https://github.com/retropie/retropie-setup/wiki/scraper#steven-selphs-scraper).
 * [Lars Muldjord's Skyscraper](https://github.com/retropie/retropie-setup/wiki/scraper#lars-muldjords-skyscraper).
 
-Use the **ROM folder for gamelists & images** option in Steven Selph's Scraper.
+Use the **ROM folder for gamelists & images** option in **Steven Selph's Scraper**.
 
-Use the **ROM folder for gamelists & media** option in Lars Muldjord's Skyscraper.
+Use the **ROM folder for gamelists & media** option in **Lars Muldjord's Skyscraper**.
 
 ## Installation
 
@@ -22,6 +22,13 @@ cd /home/pi/
 git clone https://github.com/hiulit/RetroPie-Convert-Videos.git
 cd RetroPie-Convert-Videos/
 sudo chmod +x retropie-convert-videos.sh
+```
+
+## Update
+
+```
+cd /home/pi/RetroPie-Convert-Videos/
+git pull
 ```
 
 ## Usage
@@ -205,6 +212,7 @@ Thanks to:
 * [Clyde](https://retropie.org.uk/forum/user/clyde) - For [posting the code in the RetroPie forum](https://retropie.org.uk/forum/topic/15362/here-s-a-script-to-batch-convert-yuv-4-4-4-videos-to-yuv-4-2-0-in-retropie-linux) that inspired this script.
 * [Dan Edwards](https://github.com/edwardsd97) - For helping with [#3](https://github.com/hiulit/RetroPie-Convert-Videos/pull/3).
 * [furnace](https://retropie.org.uk/forum/user/furnace) and [mitu](https://retropie.org.uk/forum/user/mitu) - For pointing out some issues on how to better support [Lars Muldjord's Skyscraper](https://github.com/retropie/retropie-setup/wiki/scraper#lars-muldjords-skyscraper).
+* [pruperting](https://github.com/pruperting) - For the [code](https://github.com/pruperting/code_snippets/blob/master/ffmpeg_progress.sh) that the progress bar is based on.
 
 ## License
 
