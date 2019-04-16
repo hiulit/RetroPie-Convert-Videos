@@ -169,6 +169,12 @@ Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at lea
 
 Print the script version and exit.
 
+#### Example
+
+```
+./retropie-convert-videos.sh --version
+```
+
 
 ## Config file
 
