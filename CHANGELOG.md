@@ -2,7 +2,9 @@
 
 ## [Unreleased]
 
-* Up to date
+### Added
+
+* Warning dialog when using the `--convert-all` option saying that it can take a lot of time to convert all the videos.
 
 ## [2.0.0] - 2019-04-15
 
