@@ -10,17 +10,40 @@ function is_retropie() {
 
 
 function check_dependencies() {
-    if ! which avconv > /dev/null; then
-        loj "ERROR: The 'libav-tools' package is not installed!" >&2
-        log "Please, install it with 'sudo apt-get install libav-tools'." >&2
-        exit 1
-    fi
-
-    if ! which bc > /dev/null; then
-        log "ERROR: The 'bc' package is not installed!" >&2
-        echo "Please, install it with 'sudo apt-get install bc'." >&2
-        exit 1
-    fi
+    local pkg
+    for pkg in "${DEPENDENCIES[@]}"; do
+        if ! dpkg-query -W -f='${Status}' "$pkg" | awk '{print $3}' | grep -q "^installed$"; then
+            echo
+            echo "WHOOPS! The '$pkg' package is not installed!"
+            echo
+            echo "Would you like to install it now?"
+            local options=("Yes" "No")
+            local option
+            select option in "${options[@]}"; do
+                case "$option" in
+                    Yes)
+                        if ! which apt-get > /dev/null; then
+                            log "ERROR: Can't install '$pkg' automatically. Try to install it manually."
+                            exit 1
+                        else
+                            if sudo apt-get install "$pkg"; then
+                                echo
+                                log "YIPPEE! The '$pkg' package installation was successful!"
+                            fi
+                            break
+                        fi
+                        ;;
+                    No)
+                        log "ERROR: Can't launch the script if the '$pkg' package is not installed."
+                        exit 1
+                        ;;
+                    *)
+                        echo "Invalid option. Choose a number between 1 and ${#options[@]}."
+                        ;;
+                esac
+            done
+        fi
+    done
 }
 
 

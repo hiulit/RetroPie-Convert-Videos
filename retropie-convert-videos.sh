@@ -9,8 +9,9 @@
 # License: MIT https://github.com/hiulit/RetroPie-Convert-Videos/blob/master/LICENSE
 #
 # Requirements:
-# - Retropie 4.x.x
-# - libav-tools package
+# - RetroPie 4.x.x
+# - libav-tools
+# - bc
 
 
 # Globals ########################################
@@ -28,6 +29,8 @@ readonly CONVERTED_VIDEOS_DIR="converted"
 
 readonly LOG_DIR="$SCRIPT_DIR/logs"
 readonly LOG_FILE="$LOG_DIR/$(date +%F-%T).log"
+
+readonly DEPENDENCIES=("libav-tools" "bc")
 
 
 # Variables #####################################
