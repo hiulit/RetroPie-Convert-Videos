@@ -424,14 +424,14 @@ function get_options() {
                 else
                     log "$(underline "GUI mode")"
                     log
-                    cmd=(dialog \
-                        --backtitle "$SCRIPT_TITLE" \
-                        --checklist "Select ROM folders" 15 50 15)
 
                     systems="$(get_all_systems)"
-                    echo "${#systems[@]}"
                     IFS=" " read -r -a systems <<< "${systems[@]}"
-                    echo "${#systems[@]}"
+
+                    cmd=(dialog \
+                        --backtitle "$SCRIPT_TITLE" \
+                        --checklist "Select ROM folders" "$DIALOG_HEIGHT" "$DIALOG_WIDTH" "${#systems[@]}")
+
                     if [[ "${#systems[@]}" -eq 0 ]]; then
                         local scraper
                         scraper="$(get_config "scraper")"
