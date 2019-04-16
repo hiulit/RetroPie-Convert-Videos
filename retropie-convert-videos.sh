@@ -46,6 +46,7 @@ CONFIG_FLAG=0
 # External resources ############################
 
 source "$SCRIPT_DIR/utils/base.sh"
+source "$SCRIPT_DIR/utils/dialogs.sh"
 source "$SCRIPT_DIR/utils/progress-bar.sh"
 
 
@@ -356,9 +357,16 @@ function get_options() {
                 local to_ces
                 from_ces="$(get_config "from_ces")"
                 to_ces="$(get_config "to_ces")"
-                log "$(underline "Convert all systems ($(get_all_systems))")"
-                log
-                convert_videos "$(get_all_systems)" "$from_ces" "$to_ces"
+                dialog_yesno "Warning!" "Converting videos is very demanding.\nIt takes about 35 seconds to convert a video, so if you have a lot of videos... Do the math ;)\n\nDo you want to continue anyway?" 10
+                local return_value="$?"
+                if [[ "$return_value" -eq 0 ]]; then
+                    log "$(underline "Convert all systems ($(get_all_systems))")"
+                    log
+                    convert_videos "$(get_all_systems)" "$from_ces" "$to_ces"
+                else
+                    echo "Aborting ..." >&2
+                    exit 1
+                fi
                 ;;
 #H -s, --convert-systems [SYSTEMS]  Select systems to convert videos.
             -s|--convert-systems)
