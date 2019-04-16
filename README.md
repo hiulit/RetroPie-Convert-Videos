@@ -54,6 +54,7 @@ Log files are stored in `logs/`.
 ## Options
 
 * `--help`: Print the help message and exit.
+* `--path [OPTIONS]`: Set the path to the ROMs folder. **(optional)**
 * `--from-ces [OPTIONS]`: Set Color Encoding System (C.E.S) to convert from. **(optional)**
 * `--to-ces [OPTIONS]`: Set Color Encoding System (C.E.S) to convert to. **(mandatory)**
 * `--scraper [OPTIONS]`: Set the scraper. **(mandatory)**
@@ -71,6 +72,18 @@ Print the help message and exit.
 
 ```
 ./retropie-convert-videos.sh --help
+```
+
+### `--path [OPTIONS]` (optional)
+
+Set the path to the ROMs folder.
+
+By default it's `/home/pi/RetroPie/roms`.
+
+#### Example
+
+```
+./retropie-convert-videos.sh --path "/path/to/your/roms/folder"
 ```
 
 ### `--from-ces [OPTIONS]` (optional)

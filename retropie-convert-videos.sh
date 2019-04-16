@@ -24,7 +24,6 @@ readonly SCRIPT_TITLE="Convert videos for RetroPie."
 readonly SCRIPT_DESCRIPTION="A tool for RetroPie to convert videos."
 readonly SCRIPT_CFG="$SCRIPT_DIR/retropie-convert-videos-settings.cfg"
 
-readonly ROMS_DIR="$home/RetroPie/roms"
 readonly CONVERTED_VIDEOS_DIR="converted"
 
 readonly LOG_DIR="$SCRIPT_DIR/logs"
@@ -35,6 +34,7 @@ readonly LOG_FILE="$LOG_DIR/$(date +%F-%T).log"
 
 readonly SCRAPERS=("sselph" "skyscraper")
 
+ROMS_DIR="$home/RetroPie/roms"
 VIDEOS_DIR=""
 
 
@@ -72,9 +72,11 @@ function check_config() {
     local from_ces
     local to_ces
     local scraper
+    local roms_path
     from_ces="$(get_config "from_ces")"
     to_ces="$(get_config "to_ces")"
     scraper="$(get_config "scraper")"
+    roms_path="$(get_config "roms_path")"
 
     if [[ -z "$to_ces" ]]; then
         echo
@@ -96,9 +98,14 @@ function check_config() {
         exit 1
     fi
 
-    validate_scraper "$scraper"
     validate_CES "$from_ces"
     validate_CES "$to_ces"
+    validate_scraper "$scraper"
+
+    if [[ -n "$roms_path" ]]; then
+        validate_path "$roms_path"
+        ROMS_DIR="$roms_path"
+    fi
 }
 
 
@@ -114,7 +121,7 @@ function validate_CES() {
         log "ERROR: Invalid Color Encoding System (C.E.S): '$ces'." >&2
         log >&2
         if [[ "$CONFIG_FLAG" -eq 1 ]]; then
-            log "Check '$SCRIPT_CFG'" >&2
+            log "Check '$SCRIPT_CFG'." >&2
             log >&2
         fi
         log "TIP: Run the 'avconv -pix_fmts' command to get a full list of Color Encoding Systems (C.E.S)." >&2
@@ -142,6 +149,19 @@ function validate_scraper() {
         VIDEOS_DIR="images"
     elif [[ "$scraper" == "skyscraper" ]]; then
         VIDEOS_DIR="media"
+    fi
+}
+
+function validate_path() {
+    [[ -z "$1" ]] && return 0
+
+    if [[ ! -d "$1" ]]; then
+        log "ERROR: '$1' path doesn't exist." >&2
+        log >&2
+        if [[ "$CONFIG_FLAG" -eq 1 ]]; then
+            log "Check '$SCRIPT_CFG'." >&2
+        fi
+        exit 1
     fi
 }
 
@@ -330,6 +350,14 @@ function get_options() {
                 echo
                 exit 0
                 ;;
+#H -p, --path [PATH]                Set the path to the ROMs folder.
+            -p|--path)
+                check_argument "$1" "$2" || exit 1
+                shift
+                validate_path "$1"
+                set_config "roms_path" "$1"
+                exit
+                ;;
 #H -f, --from-ces [C.E.S]           Set Color Encoding System (C.E.S) to convert from.
             -f|--from-ces)
                 check_argument "$1" "$2" || exit 1
@@ -344,7 +372,7 @@ function get_options() {
                 validate_CES "$1"
                 set_config "to_ces" "$1"
                 ;;
-#H -r, --scraper                    Set the scraper.
+#H -r, --scraper [SCRAPER]          Set the scraper.
             -r|--scraper)
                 check_argument "$1" "$2" || exit 1
                 shift
@@ -435,7 +463,15 @@ function get_options() {
                     if [[ "${#systems[@]}" -eq 0 ]]; then
                         local scraper
                         scraper="$(get_config "scraper")"
+                        local roms_path
+                        roms_path="$(get_config "roms_path")"
+
                         log "ERROR: No videos found in any systems!" >&2
+                        log >&2
+                        log "$(underline "Troubleshooting")"
+                        log >&2
+                        log "Check the 'roms_path' value in '$SCRIPT_CFG'."
+                        log "Right now it's set to '$roms_path'. Is that correct?"
                         log >&2
                         log "You are using '$scraper' scraper." >&2
                         if [[ "$scraper" == "sselph" ]]; then
