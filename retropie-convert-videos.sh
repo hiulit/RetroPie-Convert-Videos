@@ -478,7 +478,7 @@ function get_options() {
                             roms_path="$ROMS_DIR"
                             log "You are using the default ROMs path: '$roms_path'." >&2
                             log >&2
-                            log "You can chage it by using the '--path' option." >&2
+                            log "If that's not the path to your ROMs folder, you can change it by using the '--path' option." >&2
                             log "(e.g. '$0 --path \"/path/to/your/roms/folder\"')." >&2
                             log >&2
                             log "Or by editting the value of 'roms_path' directly in '$SCRIPT_CFG'." >&2
