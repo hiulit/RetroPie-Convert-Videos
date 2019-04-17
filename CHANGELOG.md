@@ -2,14 +2,16 @@
 
 ## [Unreleased]
 
+* Up to date
+
+## [2.1.0] - 2019-04-17
+
 ### Added
 
 * New option `--path` to set the path to the ROMs folder. By default it's `/home/pi/RetroPie/roms`.
 * Warning dialog when using the `--convert-all` option saying that it can take a lot of time to convert all the videos.
-
-### Changed
-
 * Better detection of dependencies.
+* Better error outputs.
 
 ## [2.0.0] - 2019-04-15
 
