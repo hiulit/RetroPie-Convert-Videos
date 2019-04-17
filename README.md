@@ -191,7 +191,7 @@ Print the script version and exit.
 
 ## Config file
 
-When setting the **C.E.S** using `--from-ces` or `--to-ces`, or when using `--scraper` or `--path`, the generated values are stored in `retropie-convert-videos-settings.cfg`.
+When setting the C.E.S using `--from-ces` or `--to-ces`, or when using `--scraper` or `--path`, the generated values are stored in `retropie-convert-videos-settings.cfg`.
 
 ```
 # Settings for RetroPie Convert Videos.
