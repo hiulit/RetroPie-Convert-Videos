@@ -469,14 +469,27 @@ function get_options() {
                         local roms_path
                         roms_path="$(get_config "roms_path")"
 
-                        log "ERROR: No videos found in any systems!" >&2
+                        log "ERROR: No videos found in any system!" >&2
                         log >&2
-                        log "$(underline "Troubleshooting")"
+                        log "$(underline "Troubleshooting")" >&2
                         log >&2
-                        log "Check the 'roms_path' value in '$SCRIPT_CFG'."
-                        log "Right now it's set to '$roms_path'. Is that correct?"
+                        log "$(underline "ROMs path")" >&2
+                        if [[ -z "$roms_path" ]]; then
+                            roms_path="$ROMS_DIR"
+                            log "You are using the default ROMs path: '$roms_path'." >&2
+                            log >&2
+                            log "You can chage it by using the '--path' option." >&2
+                            log "(e.g. '$0 --path \"/path/to/your/roms/folder\"')." >&2
+                            log >&2
+                            log "Or by editting the value of 'roms_path' directly in '$SCRIPT_CFG'." >&2
+                        else
+                            log "Check the 'roms_path' value in '$SCRIPT_CFG'." >&2
+                            log "Right now it's set to '$roms_path'. Is that correct?" >&2
+                        fi
                         log >&2
+                        log "$(underline "Scraper")" >&2
                         log "You are using '$scraper' scraper." >&2
+                        log >&2
                         if [[ "$scraper" == "sselph" ]]; then
                             log "Remember to use the 'ROM folder for gamelists & images' option." >&2
                         elif [[ "$scraper" == "skyscraper" ]]; then
