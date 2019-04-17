@@ -80,6 +80,10 @@ Set the path to the ROMs folder.
 
 By default it's `/home/pi/RetroPie/roms`.
 
+#### Options
+
+* `path` - The path to the ROMs folder.
+
 #### Example
 
 ```
@@ -129,8 +133,8 @@ Set the scraper in the [config file](/retropie-convert-videos-settings.cfg).
 
 #### Options
 
-* `sselph`: Steven Selph's Scraper.
-* `skyscraper`: Lars Muldjord's Skyscraper.
+* `sselph` - Steven Selph's Scraper.
+* `skyscraper` - Lars Muldjord's Skyscraper.
 
 #### Example
 
