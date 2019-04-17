@@ -93,7 +93,7 @@ Set Color Encoding System (C.E.S) to convert from in the [config file](/retropie
 Target only videos with this particular C.E.S.
 If left blank, it will target all videos, regardless of the C.E.S.
 
-In most cases, you'd want to set it to `yuv444p` as this is the C.E.S that gives erros when using the OMX player.
+In most cases, you'd want to set it to `yuv444p` as this is the C.E.S that gives errors when using the OMX player.
 
 #### Options
 
