@@ -211,13 +211,19 @@ from_ces = ""
 
 to_ces = ""
 
-# Scraper
+# Scraper (mandatory)
 # The scraper used to get the videos.
 # Available scrapers:
 # - "sselph" (Steven Selph's Scraper).
 # - "skyscraper" (Lars Muldjord's Skyscraper).
 
 scraper = ""
+
+# ROMs folder path (optional)
+# Set the path to the ROMs folder. By default it's "/home/pi/RetroPie/roms".
+# (e.g. "/path/to/your/roms/folder")
+
+roms_path = ""
 ```
 
 You can edit this file directly instead of using `--from-ces`, `--to-ces` or `--scraper`.
