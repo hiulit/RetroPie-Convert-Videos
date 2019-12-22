@@ -151,7 +151,7 @@ function validate_scraper() {
     if [[ "$scraper" == "sselph" ]]; then
         VIDEOS_DIR="images"
     elif [[ "$scraper" == "skyscraper" ]]; then
-        VIDEOS_DIR="media"
+        VIDEOS_DIR="media/videos"
     fi
 }
 
