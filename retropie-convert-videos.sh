@@ -19,7 +19,7 @@
 home="$(find /home -type d -name RetroPie -print -quit 2>/dev/null)"
 home="${home%/RetroPie}"
 
-readonly SCRIPT_VERSION="2.1.0"
+readonly SCRIPT_VERSION="2.1.1"
 readonly SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 readonly SCRIPT_TITLE="Convert videos for RetroPie."
 readonly SCRIPT_DESCRIPTION="A tool for RetroPie to convert videos."

@@ -4,6 +4,12 @@
 
 * Up to date
 
+##  [2.1.1] - 2019-12-26
+
+### Fixed
+
+* Skyscraper's videos path in [#5](https://github.com/hiulit/RetroPie-Convert-Videos/pull/5).
+
 ## [2.1.0] - 2019-04-17
 
 ### Added

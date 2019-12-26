@@ -252,6 +252,7 @@ Thanks to:
 * [Dan Edwards](https://github.com/edwardsd97) - For helping with [#3](https://github.com/hiulit/RetroPie-Convert-Videos/pull/3).
 * [furnace](https://retropie.org.uk/forum/user/furnace) and [mitu](https://retropie.org.uk/forum/user/mitu) - For pointing out some issues on how to better support [Lars Muldjord's Skyscraper](https://github.com/retropie/retropie-setup/wiki/scraper#lars-muldjords-skyscraper).
 * [pruperting](https://github.com/pruperting) - For the [code](https://github.com/pruperting/code_snippets/blob/master/ffmpeg_progress.sh) from which the progress bar is based on.
+* [Memodellocos](https://github.com/Memodellocos) - For fixing the Skyscraper's videos path in [#5](https://github.com/hiulit/RetroPie-Convert-Videos/pull/5).
 
 ## License
 
