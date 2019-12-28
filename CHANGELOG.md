@@ -4,7 +4,13 @@
 
 * Up to date
 
-##  [2.1.1] - 2019-12-26
+## [2.1.2] - 2019-12-28
+
+### Fixed
+
+* The `check_CES()` function was checking incorrectly if the C.E.S from the video was equal to `from_ces` and thus not converting the videos.
+
+## [2.1.1] - 2019-12-26
 
 ### Fixed
 
