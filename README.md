@@ -200,7 +200,7 @@ When setting the C.E.S using `--from-ces` or `--to-ces`, or when using `--scrape
 ```
 # Settings for RetroPie Convert Videos.
 #
-# TIP: run the 'avconv -pix_fmts' command to get a full list of Color Encoding Systems (C.E.S).
+# TIP: run the 'ffmpeg -pix_fmts' command to get a full list of Color Encoding Systems (C.E.S).
 
 # From color (optional)
 # Target only videos with this particular C.E.S.

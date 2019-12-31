@@ -113,7 +113,7 @@ function progress_bar() {
         return 1
     fi
 
-    nice -n 15 avconv -loglevel error -i "$video" -vstats_file "$VSTATS_FILE" -y -pix_fmt "$to_ces" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")" > "$STREAM_ERROR_LOG_FILE" 2>&1 &
+    nice -n 15 ffmpeg -loglevel error -i "$video" -vstats_file "$VSTATS_FILE" -y -pix_fmt "$to_ces" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")" > "$STREAM_ERROR_LOG_FILE" 2>&1 &
 
     PID="$!"
     # echo "ffmpeg PID = $PID"

@@ -30,7 +30,7 @@ readonly CONVERTED_VIDEOS_DIR="converted"
 readonly LOG_DIR="$SCRIPT_DIR/logs"
 readonly LOG_FILE="$LOG_DIR/$(date +%F-%T).log"
 
-readonly DEPENDENCIES=("libav-tools" "bc")
+readonly DEPENDENCIES=("ffmpeg" "bc")
 
 
 # Variables #####################################
@@ -118,7 +118,7 @@ function validate_CES() {
 
     [[ -z "$ces" ]] && return 0
 
-    if avconv -loglevel quiet -pix_fmts | grep -q -w "$ces"; then
+    if ffmpeg -loglevel quiet -pix_fmts | grep -q -w "$ces"; then
         return 0
     else
         log "ERROR: Invalid Color Encoding System (C.E.S): '$ces'." >&2
@@ -127,7 +127,7 @@ function validate_CES() {
             log "Check '$SCRIPT_CFG'." >&2
             log >&2
         fi
-        log "TIP: Run the 'avconv -pix_fmts' command to get a full list of Color Encoding Systems (C.E.S)." >&2
+        log "TIP: Run the 'ffmpeg -pix_fmts' command to get a full list of Color Encoding Systems (C.E.S)." >&2
         exit 1
     fi
 }
@@ -183,7 +183,7 @@ function convert_video() {
 
     log "$(underline "$(basename "$rom_dir")")"
     log "Converting \"$(basename "$video")\" ... ($i/${#videos[@]})"
-    # avconv -i "$video" -y -pix_fmt "$to_ces" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")"
+    # ffmpeg -i "$video" -y -pix_fmt "$to_ces" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")"
     progress_bar
     return_value="$?"
     if [[ "$return_value" -eq 1 ]]; then
