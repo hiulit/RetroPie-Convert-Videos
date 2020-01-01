@@ -183,6 +183,7 @@ function convert_video() {
 
     log "$(underline "$(basename "$rom_dir")")"
     log "Converting \"$(basename "$video")\" ... ($i/${#videos[@]})"
+    # The conversion function used to be here but it's been moved to 'utils/progress-bar.sh'.
     # ffmpeg -i "$video" -y -pix_fmt "$to_ces" -strict experimental "$rom_dir/$VIDEOS_DIR/$converted_videos_dir/$(basename "$video")"
     progress_bar
     return_value="$?"

@@ -47,7 +47,7 @@ Use './retropie-convert-videos.sh --help' to see all the options.
 
 Before trying to convert any videos, `--to-ces` and `--scraper` must be set.
 
-Once the conversion is finished, a new `converted-<to_ces>` folder with the resulting videos will be created in `/home/pi/RetroPie/roms/<system>/images` if you are using **Steven Selph's Scraper** or in `/home/pi/RetroPie/roms/<system>/media` if you are using **Lars Muldjord's Skyscraper**. You can then replace the old videos with these ones.
+Once the conversion is finished, a new `converted-<to_ces>` folder with the resulting videos will be created in `/home/pi/RetroPie/roms/<system>/images` if you are using **Steven Selph's Scraper** or in `/home/pi/RetroPie/roms/<system>/media/videos` if you are using **Lars Muldjord's Skyscraper**. You can then replace the old videos with these ones.
 
 Log files are stored in `logs/`.
 
