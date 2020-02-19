@@ -3,7 +3,7 @@
 
 # Variables ############################################
 
-DIALOG_BACKTITLE="$SCRIPT_TITLE"
+DIALOG_BACKTITLE="$SCRIPT_TITLE (v$SCRIPT_VERSION)"
 readonly DIALOG_HEIGHT=20
 readonly DIALOG_WIDTH=60
 readonly DIALOG_OK=0
@@ -45,4 +45,42 @@ function dialog_yesno() {
         --backtitle "$DIALOG_BACKTITLE" \
         --title "$1" \
         --yesno "$2" "$dialog_height" "$dialog_width" 2>&1 >/dev/tty
+}
+
+
+function dialog_choose_all_systems_or_systems() {
+    local options=()
+    local menu_text
+    local cmd
+    local choice
+
+    options=(
+        1 "Select systems"
+        2 "All systems"
+    )
+    menu_text="Choose an option."
+    cmd=(dialog \
+        --backtitle "$DIALOG_BACKTITLE" \
+        --title "$SCRIPT_TITLE" \
+        --cancel-label "Exit" \
+        --menu "$menu_text" 15 "$DIALOG_WIDTH" 15)
+    choice="$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)"
+    local return_value="$?"
+
+    if [[ "$return_value" -eq "$DIALOG_OK" ]]; then
+        if [[ -n "$choice" ]]; then
+            case "$choice" in
+                1)
+                    eval "$SCRIPT_FULL -s"
+                    ;;
+                2)
+                    eval "$SCRIPT_FULL -a"
+                    ;;
+            esac
+        else
+            dialog_msgbox "Error!" "Choose an option."
+        fi
+    elif [[ "$return_value" -eq "$DIALOG_CANCEL" ]]; then
+        exit 0
+    fi
 }

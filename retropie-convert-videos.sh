@@ -21,7 +21,9 @@ home="${home%/RetroPie}"
 
 readonly SCRIPT_VERSION="2.1.2"
 readonly SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-readonly SCRIPT_TITLE="Convert videos for RetroPie."
+readonly SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_FULL="$SCRIPT_DIR/$SCRIPT_NAME"
+readonly SCRIPT_TITLE="RetroPie Convert Videos"
 readonly SCRIPT_DESCRIPTION="A tool for RetroPie to convert videos."
 readonly SCRIPT_CFG="$SCRIPT_DIR/retropie-convert-videos-settings.cfg"
 
@@ -44,6 +46,7 @@ VIDEOS_DIR=""
 # Flags #########################################
 
 CONFIG_FLAG=0
+STANDALONE_FLAG=0
 
 
 # External resources ############################
@@ -86,6 +89,7 @@ function check_config() {
         log "'to_ces' value (mandatory) not found in '$SCRIPT_CFG'" >&2
         log >&2
         log "Try '$0 --help' for more info." >&2
+        log >&2
         log "Or read the documentation in the README." >&2
         echo
         exit 1
@@ -231,8 +235,8 @@ function convert_videos() {
     done
 
     if [[ "${#roms_dir[@]}" -eq 0 ]]; then
-        log "No systems selected" >&2
-        log "Aborting ..." >&2
+        echo "No systems selected" >&2
+        echo "Aborting ..." >&2
         exit 1
     fi
 
@@ -345,7 +349,7 @@ function get_options() {
 #H -h, --help                       Print the help message and exit.
             -h|--help)
                 echo
-                echo "$SCRIPT_TITLE"
+                underline "$SCRIPT_TITLE"
                 echo "$SCRIPT_DESCRIPTION"
                 echo
                 echo "USAGE: $0 [OPTIONS]"
@@ -464,7 +468,7 @@ function get_options() {
 
                     cmd=(dialog \
                         --backtitle "$SCRIPT_TITLE" \
-                        --checklist "Select ROM folders" "$DIALOG_HEIGHT" "$DIALOG_WIDTH" "${#systems[@]}")
+                        --checklist "Select systems" "$DIALOG_HEIGHT" "$DIALOG_WIDTH" "${#systems[@]}")
 
                     if [[ "${#systems[@]}" -eq 0 ]]; then
                         local scraper
@@ -528,6 +532,13 @@ function get_options() {
                 to_ces="$(get_config "to_ces")"
                 convert_videos "$selected_systems" "$from_ces" "$to_ces"
                 ;;
+#H -g, --gui                        Start the GUI.
+            -g|--gui)
+                if [[ -n "$2" ]] && [[ "$2" == "--standalone" ]]; then
+                    STANDALONE_FLAG=1
+                fi
+                # dialog_choose_all_systems_or_systems
+                ;;
 #H -v, --version                    Print the script version and exit.
             -v|--version)
                 echo "$SCRIPT_VERSION"
@@ -544,9 +555,11 @@ function get_options() {
 
 function main() {
 
-    if ! is_retropie; then
-        echo "ERROR: RetroPie is not installed. Aborting ..." >&2
-        exit 1
+    if [[ "$STANDALONE_FLAG" -eq 0 ]]; then
+        if ! is_retropie; then
+            echo "ERROR: RetroPie is not installed. Aborting ..." >&2
+            exit 1
+        fi
     fi
 
     check_dependencies
