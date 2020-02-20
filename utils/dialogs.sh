@@ -64,6 +64,7 @@ function dialog_choose_all_systems_or_systems() {
     cmd=(dialog \
         --backtitle "$DIALOG_BACKTITLE" \
         --title "$SCRIPT_TITLE" \
+        --ok-label "OK" \
         --cancel-label "Exit" \
         --menu "$menu_text" 15 "$DIALOG_WIDTH" 15)
     choice="$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)"
@@ -81,6 +82,44 @@ function dialog_choose_all_systems_or_systems() {
             esac
         else
             dialog_msgbox "Error!" "Choose an option."
+        fi
+    elif [[ "$return_value" -eq "$DIALOG_CANCEL" ]]; then
+        exit 0
+    fi
+}
+
+
+function dialog_select_systems() {
+    cmd=(dialog \
+        --backtitle "$SCRIPT_TITLE (v$SCRIPT_VERSION)" \
+        --title "$SCRIPT_TITLE" \
+        --ok-label "OK" \
+        --cancel-label "Exit" \
+        --checklist "Select systems." "$DIALOG_HEIGHT" "$DIALOG_WIDTH" "${#systems[@]}")
+
+    IFS=" " read -r -a systems <<< "${systems[@]}"
+    for system in "${systems[@]}"; do
+        options+=("$i" "$system" off)
+        ((i++))
+    done
+
+    choices="$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)"
+    local return_value="$?"
+
+    if [[ "$return_value" -eq "$DIALOG_OK" ]]; then
+        if [[ -n "${choices[@]}" ]]; then
+            log "$(underline "GUI mode")"
+            log
+
+            IFS=" " read -r -a choices <<< "${choices[@]}"
+            for choice in "${choices[@]}"; do
+                selected_systems+=("${options[choice*3-2]}")
+            done
+            log "Selected systems: '${selected_systems[@]}'."
+            selected_systems="${selected_systems[@]}"
+        else
+            dialog_msgbox "Info" "You must select at least 1 system."
+            dialog_select_systems
         fi
     elif [[ "$return_value" -eq "$DIALOG_CANCEL" ]]; then
         exit 0

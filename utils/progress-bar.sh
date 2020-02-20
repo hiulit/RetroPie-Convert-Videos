@@ -88,7 +88,7 @@ function progress_bar() {
             echo "XXX"
             # sleep 1
         done
-        ) | dialog --backtitle "$SCRIPT_TITLE" --title "Converting videos for '$(basename "$rom_dir")'" --gauge "Wait please ..." 12 60 0
+        ) | dialog --backtitle "$SCRIPT_TITLE (v$SCRIPT_VERSION)" --title "Converting videos for '$(basename "$rom_dir")'" --gauge "Wait please ..." 12 60 0
 
         catch_error
     }

@@ -464,15 +464,8 @@ function get_options() {
                         fi
                     fi
                 else
-                    log "$(underline "GUI mode")"
-                    log
-
                     systems="$(get_all_systems)"
                     IFS=" " read -r -a systems <<< "${systems[@]}"
-
-                    cmd=(dialog \
-                        --backtitle "$SCRIPT_TITLE" \
-                        --checklist "Select systems" "$DIALOG_HEIGHT" "$DIALOG_WIDTH" "${#systems[@]}")
 
                     if [[ "${#systems[@]}" -eq 0 ]]; then
                         local scraper
@@ -510,26 +503,8 @@ function get_options() {
                         log "Or maybe try using '$(printf '%s\n' "${SCRAPERS[@]}" | grep -Fv "$scraper")'." >&2
                         exit 1
                     fi
-                    IFS=" " read -r -a systems <<< "${systems[@]}"
-                    for system in "${systems[@]}"; do
-                        options+=("$i" "$system" off)
-                        ((i++))
-                    done
 
-                    choices="$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)"
-
-                    if [[ -z "${choices[@]}" ]]; then
-                        log "No systems selected." >&2
-                        log "Aborting ..."
-                        exit 1
-                    fi
-
-                    IFS=" " read -r -a choices <<< "${choices[@]}"
-                    for choice in "${choices[@]}"; do
-                        selected_systems+=("${options[choice*3-2]}")
-                    done
-                    log "Selected systems: '${selected_systems[@]}'."
-                    selected_systems="${selected_systems[@]}"
+                    dialog_select_systems
                 fi
 
                 from_ces="$(get_config "from_ces")"
