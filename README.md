@@ -182,6 +182,26 @@ Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at lea
 ./retropie-convert-videos.sh --convert-systems "nes snes"
 ```
 
+### `--gui [OPTIONS]`
+
+Start the GUI.
+
+#### Options
+
+* `standalone` - Launch the script without checking if RetroPie is installed.
+
+#### Example (without options)
+
+```
+./retropie-convert-videos.sh --gui
+```
+
+#### Example (with options)
+
+```
+./retropie-convert-videos.sh --gui standalone
+```
+
 ### `--version`
 
 Print the script's version.
