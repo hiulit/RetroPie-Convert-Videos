@@ -19,7 +19,7 @@
 home="$(find /home -type d -name RetroPie -print -quit 2>/dev/null)"
 home="${home%/RetroPie}"
 
-readonly SCRIPT_VERSION="2.1.2"
+readonly SCRIPT_VERSION="3.0.0"
 readonly SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 readonly SCRIPT_NAME="$(basename "$0")"
 readonly SCRIPT_FULL="$SCRIPT_DIR/$SCRIPT_NAME"
