@@ -49,6 +49,8 @@ function dialog_yesno() {
 
 
 function dialog_choose_all_systems_or_systems() {
+    [[ "$STANDALONE_FLAG" -eq 0 ]] && check_retropie
+
     local options=()
     local menu_text
     local cmd

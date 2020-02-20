@@ -9,6 +9,14 @@ function is_retropie() {
 }
 
 
+function check_retropie() {
+    if ! is_retropie; then
+        echo "ERROR: RetroPie is not installed. Aborting ..." >&2
+        exit 1
+    fi
+}
+
+
 function check_dependencies() {
     local pkg
     for pkg in "${DEPENDENCIES[@]}"; do

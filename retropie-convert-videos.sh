@@ -390,6 +390,8 @@ function get_options() {
                 ;;
 #H -a, --convert-all                Convert videos for all systems.
             -a|--convert-all)
+                [[ "$STANDALONE_FLAG" -eq 0 ]] && check_retropie
+
                 check_config
                 local from_ces
                 local to_ces
@@ -408,6 +410,8 @@ function get_options() {
                 ;;
 #H -s, --convert-systems [SYSTEMS]  Select systems to convert videos.
             -s|--convert-systems)
+                [[ "$STANDALONE_FLAG" -eq 0 ]] && check_retropie
+
                 local cmd
                 local systems=()
                 local system
@@ -532,12 +536,12 @@ function get_options() {
                 to_ces="$(get_config "to_ces")"
                 convert_videos "$selected_systems" "$from_ces" "$to_ces"
                 ;;
-#H -g, --gui                        Start the GUI.
+#H -g, --gui [STANDALONE]           Start the GUI.
             -g|--gui)
-                if [[ -n "$2" ]] && [[ "$2" == "--standalone" ]]; then
+                if [[ -n "$2" ]] && [[ "$2" == "standalone" ]]; then
                     STANDALONE_FLAG=1
                 fi
-                # dialog_choose_all_systems_or_systems
+                dialog_choose_all_systems_or_systems
                 ;;
 #H -v, --version                    Print the script's version.
             -v|--version)
@@ -554,14 +558,6 @@ function get_options() {
 
 
 function main() {
-
-    if [[ "$STANDALONE_FLAG" -eq 0 ]]; then
-        if ! is_retropie; then
-            echo "ERROR: RetroPie is not installed. Aborting ..." >&2
-            exit 1
-        fi
-    fi
-
     check_dependencies
 
     mkdir -p "$LOG_DIR"
