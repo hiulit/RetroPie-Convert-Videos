@@ -346,7 +346,7 @@ function get_options() {
         exit 0
     else
         case "$1" in
-#H -h, --help                       Print the help message and exit.
+#H -h, --help                       Print the help message.
             -h|--help)
                 echo
                 underline "$SCRIPT_TITLE"
@@ -375,14 +375,14 @@ function get_options() {
                 validate_CES "$1"
                 set_config "from_ces" "$1"
                 ;;
-#H -t, --to-ces [C.E.S]             Set Color Encoding System (C.E.S) to convert to.
+#H -t, --to-ces [C.E.S]             Set Color Encoding System (C.E.S) to convert to (mandatory).
             -t|--to-ces)
                 check_argument "$1" "$2" || exit 1
                 shift
                 validate_CES "$1"
                 set_config "to_ces" "$1"
                 ;;
-#H -r, --scraper [SCRAPER]          Set the scraper.
+#H -r, --scraper [SCRAPER]          Set the scraper (mandatory).
             -r|--scraper)
                 check_argument "$1" "$2" || exit 1
                 shift
@@ -539,7 +539,7 @@ function get_options() {
                 fi
                 # dialog_choose_all_systems_or_systems
                 ;;
-#H -v, --version                    Print the script version and exit.
+#H -v, --version                    Print the script's version.
             -v|--version)
                 echo "$SCRIPT_VERSION"
                 exit 0

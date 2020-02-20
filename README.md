@@ -66,7 +66,7 @@ Log files are stored in `logs/`.
 
 ### `--help`
 
-Print the help message and exit.
+Print the help message.
 
 #### Example
 
@@ -184,7 +184,7 @@ Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at lea
 
 ### `--version`
 
-Print the script version and exit.
+Print the script's version.
 
 #### Example
 
