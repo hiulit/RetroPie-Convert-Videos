@@ -53,7 +53,7 @@ Log files are stored in `logs/`.
 
 ## Options
 
-* `--help`: Print the help message and exit.
+* `--help`: Print the help message.
 * `--path [OPTIONS]`: Set the path to the ROMs folder. **(optional)**
 * `--from-ces [OPTIONS]`: Set Color Encoding System (C.E.S) to convert from. **(optional)**
 * `--to-ces [OPTIONS]`: Set Color Encoding System (C.E.S) to convert to. **(mandatory)**
@@ -61,7 +61,7 @@ Log files are stored in `logs/`.
 * `--convert-all`: Convert videos for all systems. **Warning! It can take a lot of time.**
 * `--convert-systems [OPTIONS]`: Select systems to convert videos.
 * `--gui [OPTIONS]`: Start the GUI.
-* `--version`: Print the script version and exit. 
+* `--version`: Print the script version. 
 
 ## Examples
 
