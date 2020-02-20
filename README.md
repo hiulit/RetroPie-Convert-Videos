@@ -60,6 +60,7 @@ Log files are stored in `logs/`.
 * `--scraper [OPTIONS]`: Set the scraper. **(mandatory)**
 * `--convert-all`: Convert videos for all systems. **Warning! It can take a lot of time.**
 * `--convert-systems [OPTIONS]`: Select systems to convert videos.
+* `--gui [OPTIONS]`: Start the GUI.
 * `--version`: Print the script version and exit. 
 
 ## Examples
