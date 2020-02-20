@@ -175,7 +175,7 @@ Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at lea
 ./retropie-convert-videos.sh --convert-systems
 ```
 
-![RetroPie Convert Videos select videos example](examples/retropie-convert-videos-select-systems.jpg)
+![RetroPie Convert Videos select videos example](examples/retropie-convert-videos-select-systems-example.jpg)
 
 #### Example (with options)
 
@@ -189,7 +189,7 @@ Start the GUI.
 
 It lets you perform all the functions, but in a more friendly manner.
 
-![RetroPie Convert Videos GUI example](examples/retropie-convert-videos-gui.jpg)
+![RetroPie Convert Videos GUI example](examples/retropie-convert-videos-gui-example.jpg)
 
 #### Options
 
