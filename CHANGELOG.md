@@ -4,6 +4,18 @@
 
 * Up to date
 
+## [3.0.0] - 2020-20-02
+
+**NOTE:** This release may contain breaking changes!
+
+### Deprecated
+
+* ~~`libav-tools`~~ for `ffmpeg`.
+
+### Added
+
+* New option `--gui` to start the GUI. It lets you perform all the functions, but in a more friendly manner. If `standalone` is passed as a parameter, the script doesn't check if RetroPie is installed, which it does by default.
+
 ## [2.1.2] - 2019-12-28
 
 ### Fixed

@@ -187,9 +187,11 @@ Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at lea
 
 Start the GUI.
 
+It lets you perform all the functions, but in a more friendly manner.
+
 #### Options
 
-* `standalone` - Launch the script without checking if RetroPie is installed.
+* `standalone` - Launch the script without checking if RetroPie is installed, which it does by default.
 
 #### Example (without options)
 
@@ -274,6 +276,7 @@ Thanks to:
 * [furnace](https://retropie.org.uk/forum/user/furnace) and [mitu](https://retropie.org.uk/forum/user/mitu) - For pointing out some issues on how to better support [Lars Muldjord's Skyscraper](https://github.com/retropie/retropie-setup/wiki/scraper#lars-muldjords-skyscraper).
 * [pruperting](https://github.com/pruperting) - For the [code](https://github.com/pruperting/code_snippets/blob/master/ffmpeg_progress.sh) from which the progress bar is based on.
 * [Memodellocos](https://github.com/Memodellocos) - For fixing the Skyscraper's videos path in [#5](https://github.com/hiulit/RetroPie-Convert-Videos/pull/5).
+* [Rion](https://retropie.org.uk/forum/user/rion) - For the idea of having the script work as a *standalone* app, without the need of RetroPie being installed.
 
 ## License
 
