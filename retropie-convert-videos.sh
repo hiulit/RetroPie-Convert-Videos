@@ -10,7 +10,7 @@
 #
 # Requirements:
 # - RetroPie 4.x.x
-# - libav-tools
+# - ffmpeg
 # - bc
 
 
@@ -210,7 +210,7 @@ function check_CES() {
     [[ -z "$from_ces" ]] && return 0 # Ignore the checking if "$from_ces" is not set
 
     local ces
-    ces="$(avprobe -show_streams "$video" 2>&1 | grep -Po "(?<=^pix_fmt=).*")"
+    ces="$(ffprobe -show_streams "$video" 2>&1 | grep -Po "(?<=^pix_fmt=).*")"
     [[ "$ces" == "$to_ces" ]] && return 1 || return 0
 }
 
@@ -259,7 +259,7 @@ function convert_videos() {
                         from_ces="$2"
                         to_ces="$3"
                         converted_videos_dir="$CONVERTED_VIDEOS_DIR-$to_ces"
-                        if avprobe "$video" 2>&1 | grep -q "$from_ces"; then
+                        if ffprobe "$video" 2>&1 | grep -q "$from_ces"; then
                             check_CES "$video"
                             local return_value="$?"
                             if [[ "$return_value" -eq 0 ]]; then

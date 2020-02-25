@@ -100,8 +100,8 @@ function progress_bar() {
 
     create_tmp_files
 
-    FPS="$(avprobe "$video" 2>&1 | sed -n "s/.*, \(.*\) tbr.*/\1/p")"
-    DUR="$(avprobe "$video" 2>&1 | sed -n "s/.* Duration: \([^,]*\), .*/\1/p")"
+    FPS="$(ffprobe "$video" 2>&1 | sed -n "s/.*, \(.*\) tbr.*/\1/p")"
+    DUR="$(ffprobe "$video" 2>&1 | sed -n "s/.* Duration: \([^,]*\), .*/\1/p")"
     HRS="$(echo $DUR | cut -d":" -f1)"
     MIN="$(echo $DUR | cut -d":" -f2)"
     SEC="$(echo $DUR | cut -d":" -f3)"
