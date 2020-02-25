@@ -8,7 +8,7 @@
 
 ### Fixed
 
-* Replaced legacy `libav-tools` (~~`avprobe`~~) commands for the new `ffmpeg`'s equivalents (~~`ffprobe`~~).
+* Replaced legacy `libav-tools` (~~`avprobe`~~) commands for the new `ffmpeg`'s equivalents (`ffprobe`).
 
 ## [3.0.0] - 2020-20-02
 
