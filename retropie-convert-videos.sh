@@ -327,11 +327,13 @@ function convert_videos() {
 function get_all_systems() {
     local all_systems=()
     local system_dir
+    local basename
     local i=1
     for system_dir in "$ROMS_DIR/"*; do
         if [[ ! -L "$system_dir" ]]; then # Filter out symlinks.
             if [[ -d "$system_dir/$VIDEOS_DIR" ]]; then
-                all_systems+=("$(basename "$system_dir")")
+                basename="$(basename "$system_dir")"
+                all_systems+=(${basename// /__}) # Replace spaces with double underscores. Needed for paths with spaces.
                 ((i++))
             fi
         fi

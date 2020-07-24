@@ -99,7 +99,7 @@ function dialog_select_systems() {
 
     IFS=" " read -r -a systems <<< "${systems[@]}"
     for system in "${systems[@]}"; do
-        options+=("$i" "$system" off)
+        options+=("$i" "${system//__/ }" off) # Replace double underscores with spaces. Needed for paths with spaces.
         ((i++))
     done
 
