@@ -4,6 +4,18 @@
 
 * Up to date
 
+## [3.2.0] - 2020-07-27
+
+**NOTE:** This release contains minor breaking changes. See the **Changed** section below:
+
+## Added
+
+* Support for spaces in ROM folders (e.g. `/home/pi/RetroPie/roms/Some Path With Spaces/`).
+
+## Changed
+
+* Now, when using the `--convert-systems` option in the CLI, the systems must be comma-separated (e.g. `./retropie-convert-videos.sh --convert-systems "nes, snes"`).
+
 ## [3.1.0] - 2020-25-02
 
 ### Fixed
