@@ -1,4 +1,4 @@
-# RetroPie Convert Videos
+# RetroPie Convert Videos ![GitHub release (latest by date)](https://img.shields.io/github/v/release/hiulit/RetroPie-Convert-Videos)
 
 A tool for RetroPie to convert videos.
 
@@ -167,7 +167,7 @@ Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at lea
 
 #### Options
 
-* `systems` - Any of the system available in RetroPie's ROMS directory (e.g. `nes`, `snes`, `megadrive`, etc.). **Systems must be quoted**. See the example below.
+* `systems` - Any of the system available in RetroPie's ROMS directory (e.g. `nes`, `snes`, `megadrive`, etc.). **Systems must be quoted and comma-separated**. See the example below.
 
 #### Example (without options)
 
@@ -180,7 +180,7 @@ Checks the [config file](/retropie-convert-videos-settings.cfg) to see if at lea
 #### Example (with options)
 
 ```
-./retropie-convert-videos.sh --convert-systems "nes snes"
+./retropie-convert-videos.sh --convert-systems "nes, snes"
 ```
 
 ### `--gui [OPTIONS]`
