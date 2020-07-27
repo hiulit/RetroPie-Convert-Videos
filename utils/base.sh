@@ -69,6 +69,38 @@ function check_argument() {
 }
 
 
+function encode_string_with_spaces() {
+    local string="$1"
+    local whitespace_encoder_default="-..-"
+    local whitespace_encoder
+    if [[ -n "$2" ]]; then
+        whitespace_encoder="$2"
+    else
+        whitespace_encoder="$whitespace_encoder_default"
+    fi
+    echo "${string// /$whitespace_encoder}"
+}
+
+
+function decode_string_with_spaces() {
+    local string="$1"
+    local whitespace_decoder_default="-..-"
+    local whitespace_decoder
+    if [[ -n "$2" ]]; then
+        whitespace_decoder="$2"
+    else
+        whitespace_decoder="$encode_string_default"
+    fi
+    echo "${string//$whitespace_decoder_default/ }"
+}
+
+function remove_leading_trailing_whitespace() {
+    local string
+    string="$1"
+    echo "$string" | awk '{$1=$1};1'
+}
+
+
 function log() {
     echo "$*" >> "$LOG_FILE"
     echo "$*"
