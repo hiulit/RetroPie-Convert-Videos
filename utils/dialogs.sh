@@ -99,7 +99,9 @@ function dialog_select_systems() {
 
     IFS=" " read -r -a systems <<< "${systems[@]}"
     for system in "${systems[@]}"; do
-        options+=("$i" "${system//__/ }" off) # Replace double underscores with spaces. Needed for paths with spaces.
+        local decoded_system
+        decoded_system="$(decode_string_with_spaces "$system")"
+        options+=("$i" "$decoded_system" off)
         ((i++))
     done
 
@@ -115,8 +117,16 @@ function dialog_select_systems() {
             for choice in "${choices[@]}"; do
                 selected_systems+=("${options[choice*3-2]}")
             done
-            log "Selected systems: '${selected_systems[@]}'."
-            selected_systems="${selected_systems[@]}"
+            log "> Selected systems: '${selected_systems[@]}'."
+
+            local encoded_selected_systems=()
+            for selected_system in "${selected_systems[@]}"; do
+                local encoded_system
+                encoded_system="$(encode_string_with_spaces "$selected_system")"
+                encoded_selected_systems+=("$encoded_system")
+            done
+
+            selected_systems="${encoded_selected_systems[@]}"
         else
             dialog_msgbox "Info" "You must select at least 1 system."
             dialog_select_systems

@@ -217,6 +217,7 @@ function check_CES() {
 
 function convert_videos() {
     local systems=()
+    local system
     local roms_dir=()
     local rom_dir
     local from_ces
@@ -231,7 +232,9 @@ function convert_videos() {
 
     IFS=" " read -r -a systems <<< "${systems[@]}"
     for system in "${systems[@]}"; do
-        roms_dir+=("$ROMS_DIR/$system")
+        local decoded_system
+        decoded_system="$(decode_string_with_spaces "$system")"
+        roms_dir+=("$ROMS_DIR/$decoded_system")
     done
 
     if [[ "${#roms_dir[@]}" -eq 0 ]]; then
@@ -251,8 +254,20 @@ function convert_videos() {
         if [[ ! -L "$rom_dir" ]]; then # Filter out symlinks.
             if [[ -d "$rom_dir/$VIDEOS_DIR" ]]; then
                 results+=("$(underline "$(basename "$rom_dir")")")
+                local found_videos=()
+                while IFS=  read -r -d $'\0'; do
+                    found_videos+=("$REPLY")
+                done < <(find "$rom_dir/$VIDEOS_DIR/" -maxdepth 1 -name "*.mp4" -print0)
+
+                if [[ -z "$found_videos" ]]; then
+                    results+=("ERROR: No videos found in '$rom_dir/$VIDEOS_DIR'.")
+                    results+=("")
+                    continue
+                fi
+
                 local videos
-                videos=("$rom_dir/$VIDEOS_DIR"/*.mp4)
+                videos=("${found_videos[@]}")
+
                 local i=1
                 for video in "${videos[@]}"; do
                     if [[ -n "$3" ]]; then
@@ -327,13 +342,15 @@ function convert_videos() {
 function get_all_systems() {
     local all_systems=()
     local system_dir
-    local basename
+    local system_name
+    local encoded_system_name
     local i=1
     for system_dir in "$ROMS_DIR/"*; do
         if [[ ! -L "$system_dir" ]]; then # Filter out symlinks.
             if [[ -d "$system_dir/$VIDEOS_DIR" ]]; then
-                basename="$(basename "$system_dir")"
-                all_systems+=(${basename// /__}) # Replace spaces with double underscores. Needed for paths with spaces.
+                system_name="$(basename "$system_dir")"
+                encoded_system_name="$(encode_string_with_spaces "$system_name")"
+                all_systems+=("$encoded_system_name")
                 ((i++))
             fi
         fi
@@ -422,9 +439,16 @@ function get_options() {
                 local choices
                 local choice
                 local selected_systems=()
+                local selected_system
+                local encoded_selected_systems=()
+                local encoded_selected_system
                 local no_found_systems=()
                 local from_ces
                 local to_ces
+                local input_systems=()
+                local input_system
+                local encoded_input_systems=()
+                local encoded_input_system
 
                 check_config
 
@@ -432,16 +456,24 @@ function get_options() {
                     log "$(underline "CLI mode")"
                     log
 
-                    local input_systems=("$2")
-                    log "Inputted systems: '${input_systems[@]}'."
-                    IFS=" " read -r -a input_systems <<< "${input_systems[@]}"
+                    input_systems=("$2")
+                    log "> Inputted systems: '${input_systems[@]}'."
+                    IFS="," read -r -a input_systems <<< "${input_systems[@]}"
+                    for input_system in "${input_systems[@]}"; do
+                        input_system="$(remove_leading_trailing_whitespace "$input_system")"
+                        encoded_input_system="$(encode_string_with_spaces "$input_system")"
+                        encoded_input_systems+=("$encoded_input_system")
+                    done
 
                     systems="$(get_all_systems)"
                     IFS=" " read -r -a systems <<< "${systems[@]}"
 
                     for system in "${systems[@]}"; do
                         for input_system in "${input_systems[@]}"; do
-                            if [[ "$input_system" == "$system" ]]; then
+                            local decoded_system
+                            input_system="$(remove_leading_trailing_whitespace "$input_system")"
+                            decoded_system="$(decode_string_with_spaces "$system")"
+                            if [[ "$input_system" == "$decoded_system" ]]; then
                                 selected_systems+=("$input_system")
                             fi
                         done
@@ -458,8 +490,13 @@ function get_options() {
                         log "Aborting ..."
                         exit 1
                     else
-                        log "Systems found: '${selected_systems[@]}'."
-                        selected_systems="${selected_systems[@]}"
+                        log
+                        log "> Systems found: '${selected_systems[@]}'."
+                        for selected_system in "${selected_systems[@]}"; do
+                            encoded_selected_system="$(encode_string_with_spaces "$selected_system")"
+                            encoded_selected_systems+=("$encoded_selected_system")
+                        done
+                        selected_systems="${encoded_selected_systems[@]}"
                         if [[ "${#no_found_systems[@]}" -gt 0 ]]; then
                             log
                             log "No videos found for the following systems: '"${no_found_systems[@]}"'." >&2
