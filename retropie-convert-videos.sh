@@ -423,8 +423,7 @@ function get_options() {
                     log
                     convert_videos "$(get_all_systems)" "$from_ces" "$to_ces"
                 else
-                    echo "Aborting ..." >&2
-                    exit 1
+                    dialog_choose_all_systems_or_systems
                 fi
                 ;;
 #H -s, --convert-systems [SYSTEMS]  Select systems to convert videos.
