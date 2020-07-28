@@ -97,6 +97,8 @@ function dialog_select_systems() {
         --title "$SCRIPT_TITLE" \
         --ok-label "OK" \
         --cancel-label "Exit" \
+        --extra-button \
+        --extra-label "Back" \
         --checklist "Select systems." "$DIALOG_HEIGHT" "$DIALOG_WIDTH" "${#systems[@]}")
 
     IFS=" " read -r -a systems <<< "${systems[@]}"
@@ -133,6 +135,8 @@ function dialog_select_systems() {
             dialog_msgbox "Info" "You must select at least 1 system."
             dialog_select_systems
         fi
+    elif [[ "$return_value" -eq "$DIALOG_EXTRA" ]]; then
+       dialog_choose_all_systems_or_systems
     elif [[ "$return_value" -eq "$DIALOG_CANCEL" ]]; then
         exit 0
     fi
