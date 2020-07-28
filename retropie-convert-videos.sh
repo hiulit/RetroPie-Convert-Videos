@@ -555,6 +555,7 @@ function get_options() {
                 if [[ -n "$2" ]] && [[ "$2" == "standalone" ]]; then
                     STANDALONE_FLAG=1
                 fi
+                check_config
                 dialog_choose_all_systems_or_systems
                 ;;
 #H -v, --version                    Print the script's version.
