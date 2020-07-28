@@ -44,6 +44,8 @@ function dialog_yesno() {
     dialog \
         --backtitle "$DIALOG_BACKTITLE" \
         --title "$1" \
+        --yes-label "Yes" \
+        --no-label "No" \
         --yesno "$2" "$dialog_height" "$dialog_width" 2>&1 >/dev/tty
 }
 
