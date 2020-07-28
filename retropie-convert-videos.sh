@@ -86,7 +86,7 @@ function check_config() {
 
     if [[ -z "$to_ces" ]]; then
         echo
-        log "'to_ces' value (mandatory) not found in '$SCRIPT_CFG'" >&2
+        log "ERROR! 'to_ces' value (mandatory) not found in '$SCRIPT_CFG'" >&2
         log >&2
         log "Try '$0 --help' for more info." >&2
         log >&2
@@ -97,9 +97,10 @@ function check_config() {
 
     if [[ -z "$scraper" ]]; then
         echo
-        log "'scraper' value (mandatory) not found in '$SCRIPT_CFG'" >&2
+        log "ERROR! 'scraper' value (mandatory) not found in '$SCRIPT_CFG'" >&2
         log >&2
         log "Try '$0 --help' for more info." >&2
+        log >&2
         log "Or read the documentation in the README." >&2
         echo
         exit 1
