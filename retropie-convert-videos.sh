@@ -207,7 +207,7 @@ function check_CES() {
         exit 1
     fi
 
-    [[ -z "$from_ces" ]] && return 0 # Ignore the checking if "$from_ces" is not set
+    [[ -z "$from_ces" ]] && return 0 # Ignore the checking if "$from_ces" is not set.
 
     local ces
     ces="$(ffprobe -show_streams "$video" 2>&1 | grep -Po "(?<=^pix_fmt=).*")"
