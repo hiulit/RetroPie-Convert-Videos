@@ -4,7 +4,7 @@
 
 * Up to date
 
-## [3.2.0] - 2020-07-27
+## [3.2.0] - 2020-07-28
 
 **NOTE:** This release contains minor breaking changes. See the **Changed** section below:
 
