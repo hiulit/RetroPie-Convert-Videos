@@ -416,7 +416,7 @@ function get_options() {
                 local to_ces
                 from_ces="$(get_config "from_ces")"
                 to_ces="$(get_config "to_ces")"
-                dialog_yesno "Warning!" "Converting videos is very demanding.\nIt takes about 35 seconds to convert a video, so if you have a lot of videos... Do the math ;)\n\nDo you want to continue anyway?" 10
+                dialog_yesno "Warning!" "Converting videos is very demanding.\nIt takes about 35 seconds to convert a video, so if you have a lot of videos... Do the math ;)\n\nDo you wish to continue anyway?" 10
                 local return_value="$?"
                 if [[ "$return_value" -eq 0 ]]; then
                     log "$(underline "Convert all systems ($(get_all_systems))")"
